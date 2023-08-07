@@ -70,6 +70,7 @@
     $hasHeaderToolbar = $isReorderable || count($groups) || $isGlobalSearchVisible || $hasFiltersDropdown || $hasColumnToggleDropdown;
     $pluralModelLabel = $getPluralModelLabel();
     $records = $isLoaded ? $getRecords() : null;
+    $sortIndicators = $getSort();
     $allSelectableRecordsCount = $isLoaded ? $getAllSelectableRecordsCount() : null;
     $columnsCount = count($columns);
     $reorderRecordsTriggerAction = $getReorderRecordsTriggerAction($isReordering);
@@ -365,6 +366,13 @@
         @if (count($filterIndicators))
             <x-filament-tables::filters.indicators
                 :indicators="$filterIndicators"
+            />
+        @endif
+
+        @if (count($sortIndicators))
+            <x-filament-tables::sort-indicators
+                :columns="array_map(fn (\Filament\Tables\Columns\Column $column) => $column->getLabel(), $columns)"
+                :indicators="$sortIndicators"
             />
         @endif
 
@@ -817,11 +825,11 @@
 
                         @foreach ($columns as $column)
                             <x-filament-tables::header-cell
-                                :actively-sorted="$getSortColumn() === $column->getName()"
+                                :actively-sorted="in_array($column->getName(), array_keys($getSort()))"
                                 :alignment="$column->getAlignment()"
                                 :name="$column->getName()"
                                 :sortable="$column->isSortable() && (! $isReordering)"
-                                :sort-direction="$getSortDirection()"
+                                :sort-direction="$getSort($column->getName())"
                                 :wrap="$column->isHeaderWrapped()"
                                 :attributes="
                                     \Filament\Support\prepare_inherited_attributes($column->getExtraHeaderAttributeBag())
