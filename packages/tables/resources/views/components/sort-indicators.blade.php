@@ -10,7 +10,7 @@
         <span
             class="text-sm font-medium leading-6 text-gray-700 dark:text-gray-200"
         >
-            {{ __('filament-tables::table.filters.indicator') }}
+            {{ __('filament-tables::table.sort.indicator') }}
         </span>
 
         <div class="flex gap-1.5">

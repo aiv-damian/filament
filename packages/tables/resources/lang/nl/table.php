@@ -98,6 +98,12 @@ return [
 
     ],
 
+    'sort' => [
+
+        'indicator' => 'Actieve sorteringen',
+
+    ],
+
     'filters' => [
 
         'actions' => [

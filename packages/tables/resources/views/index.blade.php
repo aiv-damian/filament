@@ -239,13 +239,13 @@
     <x-filament-tables::container>
         <div
             @if (! $hasHeader) x-cloak @endif
-            x-bind:hidden="! (@js($hasHeader) || (selectedRecords.length && @js(count($bulkActions))))"
+            x-data="{ areFiltersOpen: @js(! $hasFiltersAboveContentCollapsible) }"
             x-show="@js($hasHeader) || (selectedRecords.length && @js(count($bulkActions)))"
             class="fi-ta-header-ctn divide-y divide-gray-200 dark:divide-white/10"
         >
             @if ($header)
                 {{ $header }}
-            @elseif (($heading || $description || $headerActions) && ! $isReordering)
+            @elseif (($heading || $description) && ! $isReordering)
                 <x-filament-tables::header
                     :actions-position="$headerActionsPosition"
                     :description="$description"
@@ -255,7 +255,6 @@
 
             @if ($hasFiltersAboveContent || $headerActions || $hasHeaderToolbar)
                 <div
-                    x-data="{ areFiltersOpen: @js(! $hasFiltersAboveContentCollapsible) }"
                     @class([
                         'fi-ta-header-toolbar flex items-center justify-between gap-3 px-4 py-3 sm:px-6',
                     ])
@@ -313,8 +312,8 @@
                             @if ($hasFiltersAboveContentCollapsible || $hasFiltersDropdown || $hasColumnToggleDropdown)
                                 @if ($hasFiltersAboveContentCollapsible)
                                     <span x-on:click="areFiltersOpen = ! areFiltersOpen">
-                                    {{ $filtersTriggerAction->badge(count(\Illuminate\Support\Arr::flatten($filterIndicators))) }}
-                                </span>
+                                        {{ $filtersTriggerAction->badge(count(\Illuminate\Support\Arr::flatten($filterIndicators))) }}
+                                    </span>
                                 @endif
 
                                 @if ($hasFiltersDropdown)
@@ -338,17 +337,17 @@
                             @endif
                         </div>
                     @endif
-
-                    <x-filament-tables::filters
-                        :form="$getFiltersForm()"
-                        x-show="areFiltersOpen"
-                        x-cloak
-                        x-collapse
-                        @class([
-                            'py-1 sm:py-3' => $hasFiltersAboveContentCollapsible,
-                        ])
-                    />
                 </div>
+
+                <x-filament-tables::filters
+                    :form="$getFiltersForm()"
+                    x-show="areFiltersOpen"
+                    x-cloak
+                    x-collapse
+                    @class([
+                        'py-1 sm:py-3 px-4 sm:px-6' => $hasFiltersAboveContentCollapsible,
+                    ])
+                />
             @endif
         </div>
 

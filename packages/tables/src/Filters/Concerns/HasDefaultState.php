@@ -2,6 +2,8 @@
 
 namespace Filament\Tables\Filters\Concerns;
 
+use BackedEnum;
+
 trait HasDefaultState
 {
     protected mixed $defaultState = null;
@@ -15,6 +17,12 @@ trait HasDefaultState
 
     public function getDefaultState(): mixed
     {
-        return $this->evaluate($this->defaultState);
+        $state = $this->evaluate($this->defaultState);
+
+        if (is_array($state)) {
+            $state = array_map(fn ($value) => $value instanceof BackedEnum ? $value->value : $value, $state);
+        }
+
+        return $state;
     }
 }
