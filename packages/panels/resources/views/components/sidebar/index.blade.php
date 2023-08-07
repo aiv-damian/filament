@@ -98,67 +98,6 @@
             </div>
         @endif
 
-        @if (filament()->hasNavigation())
-            <ul
-                class="-mx-2 grid gap-y-7"
-                @if (filament()->isSidebarCollapsibleOnDesktop())
-                    x-bind:class="{ 'auto-cols-min': ! $store.sidebar.isOpen }"
-                @endif
-            >
-                @foreach ($navigation as $group)
-                    <x-filament-panels::sidebar.group
-                        :collapsible="$group->isCollapsible()"
-                        :icon="$group->getIcon()"
-                        :items="$group->getItems()"
-                        :label="$group->getLabel()"
-                    />
-                @endforeach
-            </ul>
-
-            @php
-                $collapsedNavigationGroupLabels = collect($navigation)
-                    ->filter(fn (\Filament\Navigation\NavigationGroup $group): bool => $group->isCollapsed())
-                    ->map(fn (\Filament\Navigation\NavigationGroup $group): string => $group->getLabel())
-                    ->values();
-            @endphp
-
-            <script>
-                let collapsedGroups = JSON.parse(
-                    localStorage.getItem('collapsedGroups'),
-                )
-
-                if (collapsedGroups === null || collapsedGroups === 'null') {
-                    localStorage.setItem(
-                        'collapsedGroups',
-                        JSON.stringify(@js($collapsedNavigationGroupLabels)),
-                    )
-                }
-
-                collapsedGroups = JSON.parse(
-                    localStorage.getItem('collapsedGroups'),
-                )
-
-                document
-                    .querySelectorAll('.fi-sidebar-group')
-                    .forEach((group) => {
-                        if (
-                            !collapsedGroups.includes(group.dataset.groupLabel)
-                        ) {
-                            return
-                        }
-
-                        // Alpine.js loads too slow, so attempt to hide a
-                        // collapsed sidebar group earlier.
-                        group.querySelector(
-                            '.fi-sidebar-group-items',
-                        ).style.display = 'none'
-                        group
-                            .querySelector('.fi-sidebar-group-collapse-button')
-                            .classList.add('rotate-180')
-                    })
-            </script>
-        @endif
-
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::sidebar.nav.end') }}
     </nav>
 
