@@ -6,11 +6,11 @@ use Closure;
 
 trait HasPopover
 {
-    protected string|Closure|null $popoverView = null;
+    protected string | Closure | null $popoverView = null;
 
-    protected array|Closure $popoverAttributes = [];
+    protected array | Closure $popoverAttributes = [];
 
-    public function popover(string|Closure|null $view, array|Closure $attributes = []): static
+    public function popover(string | Closure | null $view, array | Closure $attributes = []): static
     {
         $this->popoverView = $view;
         $this->popoverAttributes = $attributes;

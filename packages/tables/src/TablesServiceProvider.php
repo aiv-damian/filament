@@ -2,7 +2,6 @@
 
 namespace Filament\Tables;
 
-use Filament\Notifications\Livewire\DatabaseNotifications;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables\Livewire\Popover;
