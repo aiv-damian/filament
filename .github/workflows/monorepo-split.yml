@@ -16,16 +16,11 @@ jobs:
           - infolists
           - notifications
           - panels
-          - spark-billing-provider
-          - spatie-laravel-google-fonts-plugin
           - spatie-laravel-media-library-plugin
-          - spatie-laravel-settings-plugin
           - spatie-laravel-tags-plugin
-          - spatie-laravel-translatable-plugin
           - support
           - tables
           - widgets
-          - upgrade
     steps:
       - uses: actions/checkout@v3
       - id: previous-tag
@@ -36,9 +31,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           package_directory: 'packages/${{ matrix.package }}'
-          repository_organization: 'filamentphp'
+          repository_organization: 'aiv-damian'
           repository_name: '${{ matrix.package }}'
           branch: 3.x
           tag: ${{ steps.previous-tag.outputs.tag }}
-          user_name: 'Dan Harrin'
-          user_email: 'git@danharrin.com'
+          user_name: 'Damian de Jong'
+          user_email: 'damian@aiv-automatisering.nl'
