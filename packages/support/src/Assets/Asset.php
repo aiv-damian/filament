@@ -65,7 +65,7 @@ abstract class Asset
         try {
             return InstalledVersions::getVersion($this->getPackage());
         } catch (Throwable $exception) {
-            return InstalledVersions::getVersion('filament/support');
+            return InstalledVersions::getVersion('aiv/support');
         }
     }
 

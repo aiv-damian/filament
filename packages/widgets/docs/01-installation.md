@@ -62,7 +62,7 @@ npm install tailwindcss @tailwindcss/forms @tailwindcss/typography postcss autop
 Create a new `tailwind.config.js` file and add the Filament `preset` *(includes the Filament color scheme and the required Tailwind plugins)*:
 
 ```js
-import preset from './vendor/filament/support/tailwind.config.preset'
+import preset from './vendor/aiv/support/tailwind.config.preset'
 
 export default {
     presets: [preset],

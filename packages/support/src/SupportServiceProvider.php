@@ -85,7 +85,7 @@ class SupportServiceProvider extends PackageServiceProvider
             Js::make('async-alpine', __DIR__ . '/../dist/async-alpine.js'),
             Css::make('support', __DIR__ . '/../dist/index.css'),
             Js::make('support', __DIR__ . '/../dist/index.js'),
-        ], 'filament/support');
+        ], 'aiv/support');
 
         Blade::directive('captureSlots', function (string $expression): string {
             return "<?php \$slotContents = get_defined_vars(); \$slots = collect({$expression})->mapWithKeys(fn (string \$slot): array => [\$slot => \$slotContents[\$slot] ?? null])->all(); unset(\$slotContents) ?>";
@@ -118,9 +118,9 @@ class SupportServiceProvider extends PackageServiceProvider
             ];
 
             AboutCommand::add('Filament', [
-                'Version' => InstalledVersions::getPrettyVersion('filament/support'),
+                'Version' => InstalledVersions::getPrettyVersion('aiv/support'),
                 'Packages' => collect($packages)
-                    ->filter(fn (string $package): bool => InstalledVersions::isInstalled("filament/{$package}"))
+                    ->filter(fn (string $package): bool => InstalledVersions::isInstalled("aiv/{$package}"))
                     ->join(', '),
                 'Views' => function () use ($packages): string {
                     $publishedViewPaths = collect($packages)
