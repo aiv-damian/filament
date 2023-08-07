@@ -134,20 +134,19 @@ trait InteractsWithTable
         $shouldPersistSortInSession = $this->getTable()->persistsSortInSession();
         $sortSessionKey = $this->getTableSortSessionKey();
 
-        if (blank($this->tableSortColumn) && $shouldPersistSortInSession && session()->has($sortSessionKey)) {
+        if (blank($this->getTableSort()) && $shouldPersistSortInSession && session()->has($sortSessionKey)) {
             $sort = session()->get($sortSessionKey);
 
-            $this->tableSortColumn = $sort['column'] ?? null;
-            $this->tableSortDirection = $sort['direction'] ?? null;
+            $this->tableSort = [
+                ...$this->getTableSort(),
+                ...$sort,
+            ];
         }
 
         if ($shouldPersistSortInSession) {
             session()->put(
                 $sortSessionKey,
-                [
-                    'column' => $this->tableSortColumn,
-                    'direction' => $this->tableSortDirection,
-                ],
+                $this->getTableSort()
             );
         }
 

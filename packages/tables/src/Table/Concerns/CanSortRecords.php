@@ -7,23 +7,15 @@ use Filament\Tables\Columns\Column;
 
 trait CanSortRecords
 {
-    protected ?string $defaultSortColumn = null;
-
-    protected ?string $defaultSortDirection = null;
-
-    protected ?Closure $defaultSortQuery = null;
+    protected array | Closure $defaultSort = [];
 
     protected bool | Closure | null $persistsSortInSession = false;
 
-    public function defaultSort(string | Closure | null $column, string | Closure | null $direction = 'asc'): static
-    {
-        if ($column instanceof Closure) {
-            $this->defaultSortQuery = $column;
-        } else {
-            $this->defaultSortColumn = $column;
-        }
+    protected bool | Closure | null $sortsMultipleColumns = true;
 
-        $this->defaultSortDirection = strtolower($direction);
+    public function defaultSort(array | Closure $sort): static
+    {
+        $this->defaultSort = $sort;
 
         return $this;
     }
@@ -54,29 +46,25 @@ trait CanSortRecords
         return $column;
     }
 
-    public function getDefaultSortColumn(): ?string
+    public function getDefaultSort(): array
     {
-        return $this->defaultSortColumn;
+        return $this->evaluate($this->defaultSort);
     }
 
-    public function getDefaultSortDirection(): ?string
+    public function getSort(?string $column = null): array | string | null
     {
-        return $this->evaluate($this->defaultSortDirection);
+        $sorting = $this->getLivewire()->getTableSort();
+
+        if (isset($column)) {
+            return $sorting[$column] ?? null;
+        }
+
+        return $sorting;
     }
 
-    public function getDefaultSortQuery(): ?Closure
+    public function sortsMultipleColumns(): bool
     {
-        return $this->defaultSortQuery;
-    }
-
-    public function getSortColumn(): ?string
-    {
-        return $this->getLivewire()->getTableSortColumn();
-    }
-
-    public function getSortDirection(): ?string
-    {
-        return $this->getLivewire()->getTableSortDirection();
+        return (bool) $this->evaluate($this->sortsMultipleColumns);
     }
 
     public function persistsSortInSession(): bool

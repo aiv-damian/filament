@@ -57,11 +57,11 @@ class Table extends ViewComponent
         'tableSearch',
     ];
 
-    public static string $defaultCurrency = 'usd';
+    public static string $defaultCurrency = 'eur';
 
-    public static string $defaultDateDisplayFormat = 'M j, Y';
+    public static string $defaultDateDisplayFormat = 'j M Y';
 
-    public static string $defaultDateTimeDisplayFormat = 'M j, Y H:i:s';
+    public static string $defaultDateTimeDisplayFormat = 'j M Y H:i:s';
 
     public static string $defaultTimeDisplayFormat = 'H:i:s';
 
