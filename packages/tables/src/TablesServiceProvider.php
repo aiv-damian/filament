@@ -2,8 +2,10 @@
 
 namespace Filament\Tables;
 
+use Filament\Notifications\Livewire\DatabaseNotifications;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
+use Filament\Tables\Livewire\Popover;
 use Filament\Tables\Testing\TestsActions;
 use Filament\Tables\Testing\TestsBulkActions;
 use Filament\Tables\Testing\TestsColumns;
@@ -12,6 +14,7 @@ use Filament\Tables\Testing\TestsRecords;
 use Filament\Tables\Testing\TestsSummaries;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -31,6 +34,8 @@ class TablesServiceProvider extends PackageServiceProvider
         FilamentAsset::register([
             Js::make('tables', __DIR__ . '/../dist/index.js'),
         ], 'filament/tables');
+
+        Livewire::component('popover', Popover::class);
 
         if ($this->app->runningInConsole()) {
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {

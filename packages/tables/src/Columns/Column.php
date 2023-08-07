@@ -30,6 +30,7 @@ class Column extends ViewComponent
     use Concerns\HasExtraHeaderAttributes;
     use Concerns\HasLabel;
     use Concerns\HasName;
+    use Concerns\HasPopover;
     use Concerns\HasRecord;
     use Concerns\HasRowLoopObject;
     use Concerns\HasState;

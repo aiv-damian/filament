@@ -16,6 +16,10 @@
     $tooltip = $column->getTooltip();
     $url = $column->getUrl();
 
+    $hasPopover = $column->hasPopover() ?? false;
+    $popover = $column->getPopoverView() ?? null;
+    $popoverAttributes = $column->getPopoverAttributes() ?? [];
+
     $columnClasses = \Illuminate\Support\Arr::toCssClasses([
         'flex w-full disabled:pointer-events-none',
         match ($column->getAlignment()) {
@@ -41,41 +45,55 @@
     @endif
     {{ $attributes->class(['fi-ta-col-wrp']) }}
 >
-    @if (($url || ($recordUrl && $action === null)) && (! $isClickDisabled))
-        <a
-            href="{{ $url ?: $recordUrl }}"
-            @if ($shouldOpenUrlInNewTab) target="_blank" @endif
-            class="{{ $columnClasses }}"
-        >
-            {{ $slot }}
-        </a>
-    @elseif (($action || $recordAction) && (! $isClickDisabled))
-        @php
-            if ($action instanceof \Filament\Tables\Actions\Action) {
-                $wireClickAction = "mountTableAction('{$action->getName()}', '{$recordKey}')";
-            } elseif ($action) {
-                $wireClickAction = "callTableColumnAction('{$name}', '{$recordKey}')";
-            } else {
-                if ($this->getTable()->getAction($recordAction)) {
-                    $wireClickAction = "mountTableAction('{$recordAction}', '{$recordKey}')";
+    @capture($content)
+        @if (($url || ($recordUrl && $action === null)) && (! $isClickDisabled))
+            <a
+                href="{{ $url ?: $recordUrl }}"
+                @if ($shouldOpenUrlInNewTab) target="_blank" @endif
+                class="{{ $columnClasses }}"
+            >
+                {{ $slot }}
+            </a>
+        @elseif (($action || $recordAction) && (! $isClickDisabled))
+            @php
+                if ($action instanceof \Filament\Tables\Actions\Action) {
+                    $wireClickAction = "mountTableAction('{$action->getName()}', '{$recordKey}')";
+                } elseif ($action) {
+                    $wireClickAction = "callTableColumnAction('{$name}', '{$recordKey}')";
                 } else {
-                    $wireClickAction = "{$recordAction}('{$recordKey}')";
+                    if ($this->getTable()->getAction($recordAction)) {
+                        $wireClickAction = "mountTableAction('{$recordAction}', '{$recordKey}')";
+                    } else {
+                        $wireClickAction = "{$recordAction}('{$recordKey}')";
+                    }
                 }
-            }
-        @endphp
+            @endphp
 
-        <button
-            type="button"
-            wire:click="{{ $wireClickAction }}"
-            wire:loading.attr="disabled"
-            wire:target="{{ $wireClickAction }}"
-            class="{{ $columnClasses }}"
+            <button
+                type="button"
+                wire:click="{{ $wireClickAction }}"
+                wire:loading.attr="disabled"
+                wire:target="{{ $wireClickAction }}"
+                class="{{ $columnClasses }}"
+            >
+                {{ $slot }}
+            </button>
+        @else
+            <div class="{{ $columnClasses }}">
+                {{ $slot }}
+            </div>
+        @endif
+    @endcapture
+
+    @if ($hasPopover)
+        <x-filament-tables::popover
+            :model="$record"
+            :view="$popover"
+            {{ $attributes->merge($popoverAttributes, escape: false) }}
         >
-            {{ $slot }}
-        </button>
+            {{ $content() }}
+        </x-filament-tables::popover>
     @else
-        <div class="{{ $columnClasses }}">
-            {{ $slot }}
-        </div>
+        {{ $content() }}
     @endif
 </div>
