@@ -122,6 +122,7 @@
                             searchingMessage: @js($getSearchingMessage()),
                             searchPrompt: @js($getSearchPrompt()),
                             searchableOptionFields: @js($getSearchableOptionFields()),
+                            sortColumn: @js($getSortColumn()),
                             state: $wire.{{ $applyStateBindingModifiers("entangle('{$statePath}')") }},
                             statePath: @js($statePath),
                         })"

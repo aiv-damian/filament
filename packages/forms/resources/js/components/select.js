@@ -25,6 +25,7 @@ export default function selectFormComponent({
     searchingMessage,
     searchPrompt,
     searchableOptionFields,
+    sortColumn,
     state,
     statePath,
 }) {
@@ -61,6 +62,13 @@ export default function selectFormComponent({
                 searchPlaceholderValue: searchPrompt,
                 searchResultLimit: optionsLimit,
                 shouldSort: false,
+                sorter: function(a, b) {
+                    if (sortColumn !== undefined) {
+                        return b[sortColumn] - a[sortColumn];
+                    }
+
+                    return b - a;
+                },
                 searchFloor: hasDynamicSearchResults ? 0 : 1,
             })
 

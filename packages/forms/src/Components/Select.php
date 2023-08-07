@@ -70,6 +70,10 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
 
     protected ?Closure $modifyEditOptionActionUsing = null;
 
+    protected ?Closure $modifyTransformingOptionsUsing = null;
+
+    protected string | Closure | null $sortColumn = null;
+
     protected ?Model $cachedSelectedRecord = null;
 
     protected bool | Closure $isMultiple = false;
@@ -641,18 +645,43 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
         return $this->transformOptionsForJs($this->getOptionLabels());
     }
 
+    public function transformOptionsUsing(?Closure $callback): static
+    {
+        $this->modifyTransformingOptionsUsing = $callback;
+
+        return $this;
+    }
+
     /**
      * @param  array<string | array<string>>  $options
      * @return array<array<string, mixed>>
      */
     protected function transformOptionsForJs(array $options): array
     {
+        if ($this->modifyTransformingOptionsUsing) {
+            return $this->evaluate($this->modifyTransformingOptionsUsing, [
+                'options' => $options,
+            ]);
+        }
+
         return collect($options)
             ->map(fn ($label, $value): array => is_array($label)
                 ? ['label' => $value, 'choices' => $this->transformOptionsForJs($label)]
                 : ['label' => $label, 'value' => strval($value)])
             ->values()
             ->all();
+    }
+
+    public function sortColumn(string | Closure $column): static
+    {
+        $this->sortColumn = $column;
+
+        return $this;
+    }
+
+    public function getSortColumn(): ?string
+    {
+        return $this->evaluate($this->sortColumn);
     }
 
     public function isMultiple(): bool
