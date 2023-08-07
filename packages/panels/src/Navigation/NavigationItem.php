@@ -7,7 +7,7 @@ use Filament\Support\Components\Component;
 
 class NavigationItem extends Component
 {
-    protected string | Closure | null $group = null;
+    protected array | Closure $children = [];
 
     protected ?Closure $isActiveWhen = null;
 
@@ -57,9 +57,9 @@ class NavigationItem extends Component
         return $this;
     }
 
-    public function group(string | Closure | null $group): static
+    public function children(array | Closure $children): static
     {
-        $this->group = $group;
+        $this->children = $children;
 
         return $this;
     }
@@ -141,9 +141,9 @@ class NavigationItem extends Component
         return $this->evaluate($this->badgeColor);
     }
 
-    public function getGroup(): ?string
+    public function getChildren(): array
     {
-        return $this->evaluate($this->group);
+        return $this->evaluate($this->children);
     }
 
     public function getIcon(): ?string
