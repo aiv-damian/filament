@@ -32,7 +32,6 @@ $app->register(ActionsServiceProvider::class);
 $app->register(FormsServiceProvider::class);
 $app->register(InfolistsServiceProvider::class);
 $app->register(NotificationsServiceProvider::class);
-$app->register(SpatieLaravelTranslatablePluginServiceProvider::class);
 $app->register(SupportServiceProvider::class);
 $app->register(TablesServiceProvider::class);
 $app->register(WidgetsServiceProvider::class);

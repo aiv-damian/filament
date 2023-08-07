@@ -1,5 +1,5 @@
 {
-    "name": "filament/filament",
+    "name": "aiv/filament",
     "description": "A collection of full-stack components for accelerated Laravel development.",
     "license": "MIT",
     "require": {
@@ -10,7 +10,7 @@
     "require-dev": {
         "danharrin/livewire-rate-limiting": "^0.3|^1.0",
         "doctrine/dbal": "^3.2",
-        "filament/support": "*",
+        "aiv/support": "*",
         "kirschbaum-development/eloquent-power-joins": "^3.0",
         "laravel/cashier": "^14.2",
         "laravel/pint": "^1.0",

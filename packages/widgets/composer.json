@@ -1,5 +1,5 @@
 {
-    "name": "filament/widgets",
+    "name": "aiv/widgets",
     "description": "Easily add beautiful dashboard widgets to any Livewire component.",
     "license": "MIT",
     "homepage": "https://github.com/filamentphp/filament",
@@ -9,7 +9,7 @@
     },
     "require": {
         "php": "^8.1",
-        "filament/support": "self.version",
+        "aiv/support": "self.version",
         "spatie/laravel-package-tools": "^1.9"
     },
     "autoload": {
