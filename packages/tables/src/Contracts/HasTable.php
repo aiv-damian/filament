@@ -63,9 +63,7 @@ interface HasTable
 
     public function getTablePage(): int;
 
-    public function getTableSortColumn(): ?string;
-
-    public function getTableSortDirection(): ?string;
+    public function getTableSort(): array;
 
     public function getAllTableSummaryQuery(): Builder;
 
