@@ -32,7 +32,9 @@ class EditAction extends Action
 
         $this->successNotificationTitle(__('filament-actions::edit.single.notifications.saved.title'));
 
-        $this->icon('heroicon-m-pencil-square');
+        $this->icon('heroicon-o-pencil');
+
+        $this->color('info');
 
         $this->fillForm(function (Model $record, Table $table): array {
             if ($translatableContentDriver = $table->makeTranslatableContentDriver()) {
