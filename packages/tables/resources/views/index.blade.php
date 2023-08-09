@@ -339,15 +339,17 @@
                     @endif
                 </div>
 
-                <x-filament-tables::filters
-                    :form="$getFiltersForm()"
-                    x-show="areFiltersOpen"
-                    x-cloak
-                    x-collapse
-                    @class([
-                        'py-1 sm:py-3 px-4 sm:px-6' => $hasFiltersAboveContentCollapsible,
-                    ])
-                />
+                @if ($hasFiltersAboveContentCollapsible)
+                    <x-filament-tables::filters
+                        :form="$getFiltersForm()"
+                        x-show="areFiltersOpen"
+                        x-cloak
+                        x-collapse
+                        @class([
+                            'py-1 sm:py-3 px-4 sm:px-6' => $hasFiltersAboveContentCollapsible,
+                        ])
+                    />
+                @endif
             @endif
         </div>
 

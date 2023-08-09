@@ -42,7 +42,7 @@
                 @class([
                     'fi-topbar-item-icon h-5 w-5',
                     'text-primary-300 dark:text-gray-500' => ! $active,
-                    'text-primary-500' => $active,
+                    'text-primary-400' => $active,
                 ])
             />
         @endif
