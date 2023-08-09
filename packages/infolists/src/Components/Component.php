@@ -37,6 +37,7 @@ class Component extends ViewComponent
         return match ($parameterName) {
             'record' => [$this->getRecord()],
             'state' => [$this->getState()],
+            'livewire' => [$this->getLivewire()],
             default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
         };
     }
