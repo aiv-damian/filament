@@ -48,7 +48,7 @@ trait HasActions
                 $this->mergeCachedFlatActions($flatActions);
             } elseif ($action instanceof Action) {
                 $action->defaultSize(ActionSize::Small);
-                $action->defaultView($action::LINK_VIEW);
+                $action->defaultView($action::ICON_BUTTON_VIEW);
 
                 $this->cacheAction($action);
             } else {
@@ -188,7 +188,7 @@ trait HasActions
         }
 
         if (! ($this->getContentGrid() || $this->hasColumnsLayout())) {
-            return ActionsPosition::AfterColumns;
+            return ActionsPosition::BeforeColumns;
         }
 
         return ActionsPosition::AfterContent;
