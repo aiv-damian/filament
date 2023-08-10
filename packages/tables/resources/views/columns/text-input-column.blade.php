@@ -50,7 +50,7 @@
             ->merge($getExtraAttributes(), escape: false)
             ->class([
                 'fi-ta-text-input',
-                'px-3 py-4' => ! $isInline(),
+                'px-2 py-1' => ! $isInline(),
             ])
     }}
 >
