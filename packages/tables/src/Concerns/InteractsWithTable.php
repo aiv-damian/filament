@@ -175,7 +175,7 @@ trait InteractsWithTable
             ->content($this->getTableContent())
             ->contentFooter($this->getTableContentFooter())
             ->contentGrid($this->getTableContentGrid())
-            ->defaultSort($this->getDefaultTableSortColumn(), $this->getDefaultTableSortDirection())
+            ->defaultSort($this->getDefaultTableSort())
             ->deferLoading($this->isTableLoadingDeferred())
             ->description($this->getTableDescription())
             ->deselectAllRecordsWhenFiltered($this->shouldDeselectAllRecordsWhenTableFiltered())

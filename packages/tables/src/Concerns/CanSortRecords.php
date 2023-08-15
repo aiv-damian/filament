@@ -2,6 +2,7 @@
 
 namespace Filament\Tables\Concerns;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
 trait CanSortRecords
@@ -119,17 +120,9 @@ trait CanSortRecords
     /**
      * @deprecated Override the `table()` method to configure the table.
      */
-    protected function getDefaultTableSortColumn(): ?string
+    protected function getDefaultTableSort(): array|Closure
     {
-        return null;
-    }
-
-    /**
-     * @deprecated Override the `table()` method to configure the table.
-     */
-    protected function getDefaultTableSortDirection(): ?string
-    {
-        return null;
+        return [];
     }
 
     public function getTableSortSessionKey(): string
