@@ -36,31 +36,6 @@ class SpatieMediaLibraryEntry extends Entry
 
         return $this->getRecord()->getRelationValue('media')
             ->filter(fn (Media $media): bool => blank($collection) || ($media->getAttributeValue('collection_name') === $collection))
-            ->map(fn (Media $media): string => $media->uuid)
             ->all();
-    }
-
-    /**
-     * @return array<ComponentContainer>
-     */
-    public function getChildComponentContainers(bool $withHidden = false): array
-    {
-        $containers = [];
-
-        foreach ($this->getState() ?? [] as $itemKey => $itemData) {
-            $container = $this
-                ->getChildComponentContainer()
-                ->getClone()
-                ->statePath($itemKey)
-                ->inlineLabel(false);
-
-            if ($itemData instanceof Model) {
-                $container->record($itemData);
-            }
-
-            $containers[$itemKey] = $container;
-        }
-
-        return $containers;
     }
 }

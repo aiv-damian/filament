@@ -14,5 +14,4 @@ class SpatieLaravelMediaLibraryServiceProvider extends PackageServiceProvider
             ->name('filament-media-library')
             ->hasViews();
     }
-
 }
