@@ -81,6 +81,8 @@ abstract class Resource
 
     protected static ?string $slug = null;
 
+    protected static bool $hasActivityManager = false;
+
     protected static ?string $tenantOwnershipRelationshipName = null;
 
     protected static ?string $tenantRelationshipName = null;
@@ -794,5 +796,10 @@ abstract class Resource
         }
 
         return $tenant->{$relationshipName}();
+    }
+
+    public static function hasActivityManager(): bool
+    {
+        return static::$hasActivityManager;
     }
 }
