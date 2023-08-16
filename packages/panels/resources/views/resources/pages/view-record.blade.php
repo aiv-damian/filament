@@ -41,4 +41,13 @@
             @endif
         </x-filament-panels::resources.relation-managers>
     @endif
+
+    @if ($this->hasActivityManager() && \Filament\FilamentManager::hasActivityManager())
+        @php
+            $manager = \Filament\FilamentManager::getActivityManager();
+            $managerLivewireProperties = ['lazy' => true, 'ownerRecord' => $record];
+        @endphp
+
+        @livewire($manager, $managerLivewireProperties, key($manager))
+    @endif
 </x-filament-panels::page>

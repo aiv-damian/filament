@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static StatefulGuard auth()
  * @method static void bootCurrentPanel()
  * @method static array<NavigationGroup> buildNavigation()
+ * @method static bool hasActivityManager()
+ * @method static ?string getActivityManager()
  * @method static string getAuthGuard()
  * @method static string | null getAuthPasswordBroker()
  * @method static string getBrandName()

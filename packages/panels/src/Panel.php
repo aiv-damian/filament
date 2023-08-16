@@ -9,6 +9,7 @@ use Filament\Support\Facades\FilamentIcon;
 
 class Panel extends Component
 {
+    use Panel\Concerns\HasActivityManager;
     use Panel\Concerns\HasAuth;
     use Panel\Concerns\HasAvatars;
     use Panel\Concerns\HasBrandName;

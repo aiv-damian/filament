@@ -69,6 +69,16 @@ class FilamentManager
         return $this->getCurrentPanel()->buildNavigation();
     }
 
+    public function hasActivityManager(): bool
+    {
+        return $this->getCurrentPanel()->hasActivityManager();
+    }
+
+    public function getActivityManager(): ?string
+    {
+        return $this->getCurrentPanel()->getActivityManager();
+    }
+
     public function getAuthGuard(): string
     {
         return $this->getCurrentPanel()->getAuthGuard();

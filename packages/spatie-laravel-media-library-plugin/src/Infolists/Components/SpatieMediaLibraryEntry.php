@@ -2,8 +2,6 @@
 
 namespace Filament\Infolists\Components;
 
-use Filament\Infolists\ComponentContainer;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class SpatieMediaLibraryEntry extends Entry

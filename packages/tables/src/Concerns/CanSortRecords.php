@@ -120,7 +120,7 @@ trait CanSortRecords
     /**
      * @deprecated Override the `table()` method to configure the table.
      */
-    protected function getDefaultTableSort(): array|Closure
+    protected function getDefaultTableSort(): array | Closure
     {
         return [];
     }
