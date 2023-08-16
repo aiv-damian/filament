@@ -20,6 +20,13 @@
     "config": {
         "sort-packages": true
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Filament\\SpatieLaravelMediaLibraryServiceProvider"
+            ]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
