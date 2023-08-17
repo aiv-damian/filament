@@ -104,7 +104,7 @@ abstract class Resource
 
     protected static bool $shouldSkipAuthorization = false;
 
-    protected static bool $isGlobalSearchForcedCaseInsensitive = false;
+    protected static ?bool $isGlobalSearchForcedCaseInsensitive = null;
 
     public static function form(Form $form): Form
     {
@@ -389,9 +389,11 @@ abstract class Resource
 
     public static function getGlobalSearchResults(string $search): Collection
     {
-        $search = Str::lower($search);
-
         $query = static::getGlobalSearchEloquentQuery();
+
+        if (static::isGlobalSearchForcedCaseInsensitive($query)) {
+            $search = Str::lower($search);
+        }
 
         foreach (explode(' ', $search) as $searchWord) {
             $query->where(function (Builder $query) use ($searchWord) {
@@ -613,9 +615,15 @@ abstract class Resource
         return static::getRecordTitleAttribute() !== null;
     }
 
-    public static function isGlobalSearchForcedCaseInsensitive(): bool
+    public static function isGlobalSearchForcedCaseInsensitive(Builder $query): bool
     {
-        return static::$isGlobalSearchForcedCaseInsensitive;
+        /** @var Connection $databaseConnection */
+        $databaseConnection = $query->getConnection();
+
+        return static::$isGlobalSearchForcedCaseInsensitive ?? match ($databaseConnection->getDriverName()) {
+            'pgsql' => true,
+            default => false,
+        };
     }
 
     /**
@@ -628,18 +636,20 @@ abstract class Resource
 
         $model = $query->getModel();
 
+        $isForcedCaseInsensitive = static::isGlobalSearchForcedCaseInsensitive($query);
+
         foreach ($searchAttributes as $searchAttribute) {
             $whereClause = $isFirst ? 'where' : 'orWhere';
 
             $query->when(
                 method_exists($model, 'isTranslatableAttribute') && $model->isTranslatableAttribute($searchAttribute),
-                function (Builder $query) use ($databaseConnection, $searchAttribute, $search, $whereClause): Builder {
+                function (Builder $query) use ($databaseConnection, $isForcedCaseInsensitive, $searchAttribute, $search, $whereClause): Builder {
                     $searchColumn = match ($databaseConnection->getDriverName()) {
                         'pgsql' => "{$searchAttribute}::text",
                         default => $searchAttribute,
                     };
 
-                    $caseAwareSearchColumn = static::isGlobalSearchForcedCaseInsensitive() ?
+                    $caseAwareSearchColumn = $isForcedCaseInsensitive ?
                         new Expression("lower({$searchColumn})") :
                         $searchColumn;
 
@@ -651,10 +661,10 @@ abstract class Resource
                 },
                 fn (Builder $query): Builder => $query->when(
                     str($searchAttribute)->contains('.'),
-                    function ($query) use ($whereClause, $searchAttribute, $search) {
+                    function (Builder $query) use ($isForcedCaseInsensitive, $searchAttribute, $search, $whereClause): Builder {
                         $searchColumn = (string) str($searchAttribute)->afterLast('.');
 
-                        $caseAwareSearchColumn = static::isGlobalSearchForcedCaseInsensitive() ?
+                        $caseAwareSearchColumn = $isForcedCaseInsensitive ?
                             new Expression("lower({$searchColumn})") :
                             $searchColumn;
 
@@ -665,8 +675,8 @@ abstract class Resource
                             "%{$search}%",
                         );
                     },
-                    function ($query) use ($whereClause, $searchAttribute, $search) {
-                        $caseAwareSearchColumn = static::isGlobalSearchForcedCaseInsensitive() ?
+                    function ($query) use ($isForcedCaseInsensitive, $whereClause, $searchAttribute, $search) {
+                        $caseAwareSearchColumn = $isForcedCaseInsensitive ?
                             new Expression("lower({$searchAttribute})") :
                             $searchAttribute;
 
