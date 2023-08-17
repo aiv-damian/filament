@@ -165,18 +165,22 @@ trait HasRoutes
             $navigation = $this->getNavigation();
         }
 
-        $firstGroup = Arr::first($navigation);
-
-        if (! $firstGroup) {
-            return null;
-        }
-
-        $firstItem = Arr::first($firstGroup->getItems());
+        $firstItem = Arr::first($navigation);
 
         if (! $firstItem) {
             return null;
         }
 
-        return $firstItem->getUrl();
+        if (filled($firstItem->getUrl())) {
+            return $firstItem->getUrl();
+        }
+
+        $firstChild = Arr::first($firstItem->getChildren());
+
+        if (! $firstChild) {
+            return null;
+        }
+
+        return $firstChild->getUrl();
     }
 }
