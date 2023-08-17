@@ -123,7 +123,7 @@
                             searchPrompt: @js($getSearchPrompt()),
                             searchableOptionFields: @js($getSearchableOptionFields()),
                             sortColumn: @js($getSortColumn()),
-                            state: $wire.{{ $applyStateBindingModifiers("entangle('{$statePath}')") }},
+                            state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')") }},
                             statePath: @js($statePath),
                         })"
                 wire:ignore

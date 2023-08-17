@@ -1017,6 +1017,8 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
             $relationship = $component->getRelationship();
 
             if (! $relationship instanceof BelongsToMany) {
+                $relationship->associate($state);
+
                 return;
             }
 
