@@ -11,13 +11,14 @@ class Get
     ) {
     }
 
-    public function __invoke(string | Component $path, bool $isAbsolute = false): mixed
+    public function __invoke(string | Component $path, bool $isAbsolute = false, mixed $default = null): mixed
     {
         $livewire = $this->component->getLivewire();
 
         return data_get(
             $livewire,
-            $this->component->generateRelativeStatePath($path, $isAbsolute)
+            $this->component->generateRelativeStatePath($path, $isAbsolute),
+            $default
         );
     }
 }
