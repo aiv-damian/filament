@@ -36,7 +36,9 @@
                 'flex lg:ps-[--sidebar-width]' => ! (filament()->isSidebarCollapsibleOnDesktop() || filament()->isSidebarFullyCollapsibleOnDesktop() || filament()->hasTopNavigation()),
             ])
         >
-            <x-filament-panels::topbar :navigation="$navigation" />
+            @persist('topbar')
+                <x-filament-panels::topbar :navigation="$navigation" />
+            @endpersist
 
             <main
                 @class([

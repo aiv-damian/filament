@@ -48,7 +48,7 @@
                 @if ($homeUrl = filament()->getHomeUrl())
                     <a
                         href="{{ $homeUrl }}"
-                        {{-- wire:navigate --}}
+                        wire:navigate
                     >
                         <x-filament-panels::logo />
                     </a>
@@ -93,7 +93,7 @@
                                             :icon="$child->isActive() ? ($child->getActiveIcon() ?? $icon) : $icon"
                                             tag="a"
                                             :target="$shouldOpenUrlInNewTab ? '_blank' : null"
-                                            {{-- :wire:navigate="$shouldOpenUrlInNewTab ? null : true" --}}
+                                            :wire:navigate="$shouldOpenUrlInNewTab ? null : true"
                                         >
                                             {{ $child->getLabel() }}
                                         </x-filament::dropdown.list.item>
