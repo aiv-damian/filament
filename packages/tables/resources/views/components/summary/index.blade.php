@@ -28,13 +28,11 @@
     :columns="$columns"
     :extra-heading-column="$extraHeadingColumn"
     :groups-only="$groupsOnly"
-    :heading="__(($hasPageSummary ? 'filament-tables::table.summary.subheadings.all' : 'filament-tables::table.summary.heading'), ['label' => $pluralModelLabel])"
+    :heading="__('filament-tables::table.summary.heading', ['label' => $pluralModelLabel])"
     :placeholder-columns="$placeholderColumns"
     :query="$query"
     :record-checkbox-position="$recordCheckboxPosition"
     :selected-state="$selectedState"
     :selection-enabled="$selectionEnabled"
-    @class([
-        'bg-gray-50 dark:bg-white/5' => ! $hasPageSummary,
-    ])
+    class="bg-gray-50 dark:bg-white/5"
 />
