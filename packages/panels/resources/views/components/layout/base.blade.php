@@ -58,6 +58,7 @@
                 --font-family: {!! filament()->getFontFamily() !!};
                 --sidebar-width: {{ filament()->getSidebarWidth() }};
                 --collapsed-sidebar-width: {{ filament()->getCollapsedSidebarWidth() }};
+                --nprogress-color: var(--primary-500);
             }
         </style>
 
