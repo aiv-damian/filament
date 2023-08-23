@@ -20,7 +20,6 @@
     :wire:target="$action->getLivewireTarget()"
     :href="$isDisabled ? null : $url"
     :target="($url && $action->shouldOpenUrlInNewTab()) ? '_blank' : null"
-    :wire:navigate="($url && ! $action->shouldOpenUrlInNewTab()) ? true : null"
     :type="$action->canSubmitForm() ? 'submit' : 'button'"
     :color="$action->getColor()"
     :key-bindings="$action->getKeyBindings()"
