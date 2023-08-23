@@ -604,7 +604,7 @@ class Repeater extends Field implements Contracts\CanConcealComponents
     public function getAddActionLabel(): string
     {
         return $this->evaluate($this->addActionLabel) ?? __('filament-forms::components.repeater.actions.add.label', [
-            'label' => Str::lcfirst($this->getLabel()),
+            'label' => $this->getLabel()
         ]);
     }
 

@@ -246,7 +246,7 @@ return [
         'actions' => [
 
             'add' => [
-                'label' => 'Toevoegen aan :label',
+                'label' => ':label toevoegen',
             ],
 
             'delete' => [
