@@ -70,8 +70,7 @@
     $hasHeaderToolbar = $isReorderable || count($groups) || $isGlobalSearchVisible || $hasFiltersDropdown || $hasColumnToggleDropdown;
     $pluralModelLabel = $getPluralModelLabel();
     $records = $isLoaded ? $getRecords() : null;
-    $sortIndicators = $getSort();
-    $allSelectableRecordsCount = $isLoaded ? $getAllSelectableRecordsCount() : null;
+    $allSelectableRecordsCount = ($isSelectionEnabled && $isLoaded) ? $getAllSelectableRecordsCount() : null;
     $columnsCount = count($columns);
     $reorderRecordsTriggerAction = $getReorderRecordsTriggerAction($isReordering);
     $toggleColumnsTriggerAction = $getToggleColumnsTriggerAction();
