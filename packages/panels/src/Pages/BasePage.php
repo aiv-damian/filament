@@ -32,7 +32,7 @@ abstract class BasePage extends Component implements HasForms, HasActions
 
     protected ?string $maxContentWidth = null;
 
-    public static string $formActionsAlignment = 'start';
+    public static string $formActionsAlignment = 'end';
 
     public static bool $formActionsAreSticky = false;
 
