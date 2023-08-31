@@ -71,8 +71,6 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
 
     protected ?Closure $modifyEditOptionActionUsing = null;
 
-    protected ?Closure $modifyTransformingOptionsUsing = null;
-
     protected string | Closure | null $sortColumn = null;
 
     protected ?Model $cachedSelectedRecord = null;
@@ -88,6 +86,8 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
     protected ?Closure $getSearchResultsUsing = null;
 
     protected ?Closure $getSelectedRecordUsing = null;
+
+    protected ?Closure $transformOptionsForJsUsing = null;
 
     /**
      * @var array<string> | null
@@ -172,6 +172,15 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
             }
 
             return $labels;
+        });
+
+        $this->transformOptionsForJsUsing(function (array $options): array {
+            return collect($options)
+                ->map(fn ($label, $value): array => is_array($label)
+                    ? ['label' => $value, 'choices' => $this->transformOptionsForJs($label)]
+                    : ['label' => $label, 'value' => strval($value), 'disabled' => $this->isOptionDisabled($value, $label)])
+                ->values()
+                ->all();
         });
 
         $this->placeholder(fn (Select $component): ?string => $component->isDisabled() ? null : __('filament-forms::components.select.placeholder'));
@@ -507,6 +516,13 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
         return $this;
     }
 
+    public function transformOptionsForJsUsing(?Closure $callback): static
+    {
+        $this->transformOptionsForJsUsing = $callback;
+
+        return $this;
+    }
+
     /**
      * @param  bool | array<string> | Closure  $condition
      */
@@ -646,31 +662,25 @@ class Select extends Field implements Contracts\HasAffixActions, Contracts\HasNe
         return $this->transformOptionsForJs($this->getOptionLabels());
     }
 
-    public function transformOptionsUsing(?Closure $callback): static
-    {
-        $this->modifyTransformingOptionsUsing = $callback;
-
-        return $this;
-    }
-
     /**
      * @param  array<string | array<string>>  $options
      * @return array<array<string, mixed>>
      */
     protected function transformOptionsForJs(array $options): array
     {
-        if ($this->modifyTransformingOptionsUsing) {
-            return $this->evaluate($this->modifyTransformingOptionsUsing, [
-                'options' => $options,
-            ]);
+        if (empty($options)) {
+            return [];
         }
 
-        return collect($options)
-            ->map(fn ($label, $value): array => is_array($label)
-                ? ['label' => $value, 'choices' => $this->transformOptionsForJs($label)]
-                : ['label' => $label, 'value' => strval($value), 'disabled' => $this->isOptionDisabled($value, $label)])
-            ->values()
-            ->all();
+        $transformedOptions = $this->evaluate($this->transformOptionsForJsUsing, [
+            'options' => $options,
+        ]);
+
+        if ($transformedOptions instanceof Arrayable) {
+            return $transformedOptions->toArray();
+        }
+
+        return $transformedOptions;
     }
 
     public function sortColumn(string | Closure $column): static
