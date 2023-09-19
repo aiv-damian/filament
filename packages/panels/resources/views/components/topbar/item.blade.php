@@ -20,13 +20,7 @@
 >
     <{{ $tag }}
         @if ($url)
-        href="{{ $url }}"
-
-        @if ($shouldOpenUrlInNewTab)
-            target="_blank"
-        @else
-            wire:navigate
-        @endif
+            {{ \Filament\Support\generate_href_html($url, $shouldOpenUrlInNewTab) }}
         @else
             type="button"
         @endif
@@ -35,7 +29,7 @@
             'text-gray-300 dark:text-gray-200' => ! $active,
             'bg-gray-900 text-white dark:bg-white/5 dark:text-primary-400' => $active,
         ])
-        >
+    >
         @if ($icon || $activeIcon)
             <x-filament::icon
                 :icon="($active && $activeIcon) ? $activeIcon : $icon"
@@ -48,8 +42,8 @@
         @endif
 
         <span>
-                {{ $slot }}
-            </span>
+            {{ $slot }}
+        </span>
 
         @if (filled($badge))
             <x-filament::badge :color="$badgeColor" size="sm">

@@ -11,6 +11,7 @@
     'disabled' => false,
     'form' => null,
     'grouped' => false,
+    'href' => null,
     'icon' => null,
     'iconAlias' => null,
     'iconPosition' => IconPosition::Before,
@@ -21,6 +22,7 @@
     'outlined' => false,
     'size' => 'md',
     'tag' => 'button',
+    'target' => null,
     'tooltip' => null,
     'type' => 'button',
 ])
@@ -85,7 +87,10 @@
     ]);
 
     $buttonStyles = \Illuminate\Support\Arr::toCssStyles([
-        \Filament\Support\get_color_css_variables($color, shades: [400, 500, 600]) => $color !== 'gray',
+        \Filament\Support\get_color_css_variables(
+            $color,
+            shades: [400, 500, 600],
+        ) => $color !== 'gray',
     ]);
 
     $iconSize ??= match ($size) {
@@ -280,6 +285,7 @@
     </button>
 @elseif ($tag === 'a')
     <a
+        {{ \Filament\Support\generate_href_html($href, $target === '_blank') }}
         @if ($keyBindings || $tooltip)
             x-data="{}"
         @endif

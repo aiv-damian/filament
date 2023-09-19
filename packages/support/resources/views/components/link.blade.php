@@ -10,6 +10,7 @@
     'color' => 'primary',
     'disabled' => false,
     'form' => null,
+    'href' => null,
     'icon' => null,
     'iconAlias' => null,
     'iconPosition' => IconPosition::Before,
@@ -17,6 +18,7 @@
     'keyBindings' => null,
     'size' => 'md',
     'tag' => 'a',
+    'target' => null,
     'tooltip' => null,
     'type' => 'button',
 ])
@@ -49,7 +51,10 @@
     ]);
 
     $linkStyles = \Illuminate\Support\Arr::toCssStyles([
-        \Filament\Support\get_color_css_variables($color, shades: [300, 400, 500, 600]) => $color !== 'gray',
+        \Filament\Support\get_color_css_variables(
+            $color,
+            shades: [300, 400, 500, 600],
+        ) => $color !== 'gray',
     ]);
 
     $iconSize ??= match ($size) {
@@ -72,7 +77,10 @@
     ]);
 
     $iconStyles = \Illuminate\Support\Arr::toCssStyles([
-        \Filament\Support\get_color_css_variables($color, shades: [500]) => $color !== 'gray',
+        \Filament\Support\get_color_css_variables(
+            $color,
+            shades: [500],
+        ) => $color !== 'gray',
     ]);
 
     $badgeContainerClasses = 'fi-link-badge-ctn absolute -top-1 start-full z-[1] -ms-1 w-max -translate-x-1/2 rounded-md bg-white rtl:translate-x-1/2 dark:bg-gray-900';
@@ -88,6 +96,7 @@
 
 @if ($tag === 'a')
     <a
+        {{ \Filament\Support\generate_href_html($href, $target === '_blank') }}
         @if ($keyBindings || $tooltip)
             x-data="{}"
         @endif

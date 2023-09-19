@@ -9,6 +9,7 @@
     'color' => 'primary',
     'disabled' => false,
     'form' => null,
+    'href' => null,
     'icon' => null,
     'iconAlias' => null,
     'iconSize' => null,
@@ -16,6 +17,7 @@
     'label' => null,
     'size' => 'md',
     'tag' => 'button',
+    'target' => null,
     'tooltip' => null,
     'type' => 'button',
 ])
@@ -43,7 +45,10 @@
         },
     ]);
 
-    $buttonStyles = \Filament\Support\get_color_css_variables($color, shades: [300, 400, 500, 600]);
+    $buttonStyles = \Filament\Support\get_color_css_variables(
+        $color,
+        shades: [300, 400, 500, 600],
+    );
 
     $iconClasses = \Illuminate\Support\Arr::toCssClasses([
         'fi-icon-btn-icon',
@@ -123,6 +128,7 @@
     </button>
 @elseif ($tag === 'a')
     <a
+        {{ \Filament\Support\generate_href_html($href, $target === '_blank') }}
         @if ($keyBindings || $tooltip)
             x-data="{}"
         @endif

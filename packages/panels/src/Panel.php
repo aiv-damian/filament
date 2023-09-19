@@ -6,12 +6,14 @@ use Closure;
 use Filament\Support\Components\Component;
 use Filament\Support\Facades\FilamentColor;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Facades\FilamentView;
 
 class Panel extends Component
 {
     use Panel\Concerns\HasActivityManager;
     use Panel\Concerns\HasAuth;
     use Panel\Concerns\HasAvatars;
+    use Panel\Concerns\HasBrandLogo;
     use Panel\Concerns\HasBrandName;
     use Panel\Concerns\HasBreadcrumbs;
     use Panel\Concerns\HasColors;
@@ -30,6 +32,7 @@ class Panel extends Component
     use Panel\Concerns\HasRenderHooks;
     use Panel\Concerns\HasRoutes;
     use Panel\Concerns\HasSidebar;
+    use Panel\Concerns\HasSpaMode;
     use Panel\Concerns\HasTenancy;
     use Panel\Concerns\HasTheme;
     use Panel\Concerns\HasTopNavigation;
@@ -54,16 +57,21 @@ class Panel extends Component
         return $this;
     }
 
+    public function register(): void
+    {
+        $this->registerLivewireComponents();
+        $this->registerLivewirePersistentMiddleware();
+    }
+
     public function boot(): void
     {
         FilamentColor::register($this->colors);
 
         FilamentIcon::register($this->icons);
 
-        $this->registerRenderHooks();
+        FilamentView::spa($this->hasSpaMode());
 
-        $this->registerLivewireComponents();
-        $this->registerLivewirePersistentMiddleware();
+        $this->registerRenderHooks();
 
         foreach ($this->plugins as $plugin) {
             $plugin->boot($this);
