@@ -5,7 +5,7 @@
 
 @props([
     'actions' => [],
-    'actionsPosition',
+    'actionsPosition' => HeaderActionsPosition::Adaptive,
     'description' => null,
     'heading' => null,
 ])
