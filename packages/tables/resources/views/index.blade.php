@@ -67,7 +67,7 @@
     $hasFiltersBelowContent = $hasFilters && ($filtersLayout === FiltersLayout::BelowContent);
     $hasColumnToggleDropdown = $hasToggleableColumns();
     $hasHeader = $header || $heading || $description || ($headerActions && (! $isReordering)) || $isReorderable || count($groups) || $isGlobalSearchVisible || $hasFilters || count($filterIndicators) || $hasColumnToggleDropdown;
-    $hasHeaderToolbar = $isReorderable || count($groups) || $isGlobalSearchVisible || $hasFiltersDropdown || $hasColumnToggleDropdown;
+    $hasHeaderToolbar = $isReorderable || count($groups) || $hasFiltersDropdown;
     $pluralModelLabel = $getPluralModelLabel();
     $records = $isLoaded ? $getRecords() : null;
     $sortIndicators = $getSort();
@@ -151,7 +151,7 @@
                         'gap-y-3 py-2.5 sm:gap-y-1 sm:py-3' => $hasFiltersAboveContentCollapsible,
                     ])
                 >
-                    <div class="flex">
+                    <div class="flex justify-between">
                         @if ($headerActions)
                             <x-filament-tables::actions
                                 :actions="$headerActions"
@@ -160,17 +160,37 @@
                             />
                         @endif
 
-                        @if ($hasFiltersAboveContentCollapsible)
-                            <span
-                                x-on:click="areFiltersOpen = ! areFiltersOpen"
-                                @class([
-                                    'ms-auto inline-flex',
-                                    '-mx-2' => $filtersTriggerAction->isIconButton(),
-                                ])
-                            >
-                                {{ $filtersTriggerAction->badge(count(\Illuminate\Support\Arr::flatten($filterIndicators))) }}
-                            </span>
-                        @endif
+                        <div class="flex gap-x-2">
+                            {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.search.before', scopes: static::class) }}
+
+                            @if ($isGlobalSearchVisible)
+                                <x-filament-tables::search-field />
+                            @endif
+
+                            {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.search.after', scopes: static::class) }}
+
+                            @if ($hasFiltersAboveContentCollapsible)
+                                <span
+                                    x-on:click="areFiltersOpen = ! areFiltersOpen"
+                                    class="inline-flex"
+                                >
+                                    {{ $filtersTriggerAction->badge(count(\Illuminate\Support\Arr::flatten($filterIndicators))) }}
+                                </span>
+                            @endif
+
+                            {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.toggle-column-trigger.before', scopes: static::class) }}
+
+                            @if ($hasColumnToggleDropdown)
+                                <x-filament-tables::column-toggle.dropdown
+                                    :form="$getColumnToggleForm()"
+                                    :max-height="$getColumnToggleFormMaxHeight()"
+                                    :trigger-action="$toggleColumnsTriggerAction"
+                                    :width="$getColumnToggleFormWidth()"
+                                />
+                            @endif
+
+                            {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.toggle-column-trigger.after', scopes: static::class) }}
+                        </div>
                     </div>
 
                     <x-filament-tables::filters
@@ -229,46 +249,21 @@
                     {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.grouping-selector.after', scopes: static::class) }}
                 </div>
 
-                @if ($isGlobalSearchVisible || $hasFiltersDropdown || $hasColumnToggleDropdown)
+                @if ($hasFiltersDropdown)
                     <div
                         @class([
                             'ms-auto flex items-center',
-                            'gap-x-3' => ! ($filtersTriggerAction->isIconButton() && $toggleColumnsTriggerAction->isIconButton()),
-                            'gap-x-4' => $filtersTriggerAction->isIconButton() && $toggleColumnsTriggerAction->isIconButton(),
+                            'gap-x-3' => ! $filtersTriggerAction->isIconButton(),
+                            'gap-x-4' => $filtersTriggerAction->isIconButton(),
                         ])
                     >
-                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.search.before', scopes: static::class) }}
-
-                        @if ($isGlobalSearchVisible)
-                            <x-filament-tables::search-field />
-                        @endif
-
-                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.search.after', scopes: static::class) }}
-
-                        @if ($hasFiltersDropdown || $hasColumnToggleDropdown)
-                            @if ($hasFiltersDropdown)
-                                <x-filament-tables::filters.dropdown
-                                    :form="$getFiltersForm()"
-                                    :indicators-count="count(\Illuminate\Support\Arr::flatten($filterIndicators))"
-                                    :max-height="$getFiltersFormMaxHeight()"
-                                    :trigger-action="$filtersTriggerAction"
-                                    :width="$getFiltersFormWidth()"
-                                />
-                            @endif
-
-                            {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.toggle-column-trigger.before', scopes: static::class) }}
-
-                            @if ($hasColumnToggleDropdown)
-                                <x-filament-tables::column-toggle.dropdown
-                                    :form="$getColumnToggleForm()"
-                                    :max-height="$getColumnToggleFormMaxHeight()"
-                                    :trigger-action="$toggleColumnsTriggerAction"
-                                    :width="$getColumnToggleFormWidth()"
-                                />
-                            @endif
-
-                            {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.toggle-column-trigger.after', scopes: static::class) }}
-                        @endif
+                        <x-filament-tables::filters.dropdown
+                            :form="$getFiltersForm()"
+                            :indicators-count="count(\Illuminate\Support\Arr::flatten($filterIndicators))"
+                            :max-height="$getFiltersFormMaxHeight()"
+                            :trigger-action="$filtersTriggerAction"
+                            :width="$getFiltersFormWidth()"
+                        />
                     </div>
                 @endif
 
