@@ -135,10 +135,8 @@
         >
             @if ($header)
                 {{ $header }}
-            @elseif (($heading || $description || $headerActions) && ! $isReordering)
+            @elseif (($heading || $description) && ! $isReordering)
                 <x-filament-tables::header
-                    :actions="$isReordering ? [] : $headerActions"
-                    :actions-position="$headerActionsPosition"
                     :description="$description"
                     :heading="$heading"
                 />
@@ -153,17 +151,27 @@
                         'gap-y-3 py-2.5 sm:gap-y-1 sm:py-3' => $hasFiltersAboveContentCollapsible,
                     ])
                 >
-                    @if ($hasFiltersAboveContentCollapsible)
-                        <span
-                            x-on:click="areFiltersOpen = ! areFiltersOpen"
-                            @class([
-                                'ms-auto inline-flex',
-                                '-mx-2' => $filtersTriggerAction->isIconButton(),
-                            ])
-                        >
-                            {{ $filtersTriggerAction->badge(count(\Illuminate\Support\Arr::flatten($filterIndicators))) }}
-                        </span>
-                    @endif
+                    <div class="flex">
+                        @if ($headerActions)
+                            <x-filament-tables::actions
+                                :actions="$headerActions"
+                                :alignment="Alignment::Start"
+                                wrap
+                            />
+                        @endif
+
+                        @if ($hasFiltersAboveContentCollapsible)
+                            <span
+                                x-on:click="areFiltersOpen = ! areFiltersOpen"
+                                @class([
+                                    'ms-auto inline-flex',
+                                    '-mx-2' => $filtersTriggerAction->isIconButton(),
+                                ])
+                            >
+                                {{ $filtersTriggerAction->badge(count(\Illuminate\Support\Arr::flatten($filterIndicators))) }}
+                            </span>
+                        @endif
+                    </div>
 
                     <x-filament-tables::filters
                         :form="$getFiltersForm()"
