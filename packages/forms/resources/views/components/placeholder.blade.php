@@ -1,6 +1,7 @@
 <x-dynamic-component
     :component="$getFieldWrapperView()"
     :id="$getId()"
+    :has-inline-label="$hasInlineLabel()"
     :label="$getLabel()"
     :label-sr-only="$isLabelHidden()"
     :helper-text="$getHelperText()"
