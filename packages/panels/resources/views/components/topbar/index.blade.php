@@ -46,7 +46,7 @@
         @if (filament()->hasTopNavigation())
             <div class="me-6 hidden lg:flex">
                 @if ($homeUrl = filament()->getHomeUrl())
-                    <a {{ \Filament\Support\generate_href_html($homeUrl) }} wire:navigate>
+                    <a {{ \Filament\Support\generate_href_html($homeUrl) }}>
                         <x-filament-panels::logo />
                     </a>
                 @else
@@ -90,7 +90,6 @@
                                             :icon="$child->isActive() ? ($child->getActiveIcon() ?? $icon) : $icon"
                                             tag="a"
                                             :target="$shouldOpenUrlInNewTab ? '_blank' : null"
-                                            :wire:navigate="$shouldOpenUrlInNewTab ? null : true"
                                         >
                                             {{ $child->getLabel() }}
                                         </x-filament::dropdown.list.item>
