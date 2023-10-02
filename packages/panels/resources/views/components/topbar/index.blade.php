@@ -10,7 +10,7 @@
     }}
 >
     <nav
-        class="flex h-16 items-center gap-x-4 bg-gradient-to-tl from-gray-700 via-gray-900 to-black px-4 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 md:px-6 lg:px-8"
+        class="flex h-16 items-center gap-x-4 bg-gradient-to-tl from-slate-800 to-slate-900 px-4 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 md:px-6 lg:px-8"
     >
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::topbar.start') }}
 
