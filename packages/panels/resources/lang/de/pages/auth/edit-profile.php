@@ -2,30 +2,30 @@
 
 return [
 
-    'label' => 'پروفایل',
+    'label' => 'Profil',
 
     'form' => [
 
         'email' => [
-            'label' => 'ایمیل',
+            'label' => 'E-Mail-Adresse',
         ],
 
         'name' => [
-            'label' => 'نام',
+            'label' => 'Name',
         ],
 
         'password' => [
-            'label' => 'رمز عبور جدید',
+            'label' => 'Neues Passwort',
         ],
 
         'password_confirmation' => [
-            'label' => 'تایید رمز عبور جدید',
+            'label' => 'Passwort bestätigen',
         ],
 
         'actions' => [
 
             'save' => [
-                'label' => 'ذخیره تغییرات',
+                'label' => 'Änderung speichern',
             ],
 
         ],
@@ -35,7 +35,7 @@ return [
     'notifications' => [
 
         'saved' => [
-            'title' => 'ذخیره شد',
+            'title' => 'Gespeichert',
         ],
 
     ],
@@ -43,7 +43,7 @@ return [
     'actions' => [
 
         'cancel' => [
-            'label' => 'لغو',
+            'label' => 'Abbrechen',
         ],
 
     ],

@@ -400,24 +400,7 @@ abstract class Resource
     {
         $query = static::getGlobalSearchEloquentQuery();
 
-        if (static::isGlobalSearchForcedCaseInsensitive($query)) {
-            $search = Str::lower($search);
-        }
-
-        foreach (explode(' ', $search) as $searchWord) {
-            $query->where(function (Builder $query) use ($searchWord) {
-                $isFirst = true;
-
-                foreach (static::getGloballySearchableAttributes() as $attributes) {
-                    static::applyGlobalSearchAttributeConstraint(
-                        query: $query,
-                        search: $searchWord,
-                        searchAttributes: Arr::wrap($attributes),
-                        isFirst: $isFirst,
-                    );
-                }
-            });
-        }
+        static::applyGlobalSearchAttributeConstraints($query, $search);
 
         static::modifyGlobalSearchQuery($query, $search);
 
@@ -635,6 +618,28 @@ abstract class Resource
             'pgsql' => true,
             default => false,
         };
+    }
+
+    protected static function applyGlobalSearchAttributeConstraints(Builder $query, string $search): void
+    {
+        if (static::isGlobalSearchForcedCaseInsensitive($query)) {
+            $search = Str::lower($search);
+        }
+
+        foreach (explode(' ', $search) as $searchWord) {
+            $query->where(function (Builder $query) use ($searchWord) {
+                $isFirst = true;
+
+                foreach (static::getGloballySearchableAttributes() as $attributes) {
+                    static::applyGlobalSearchAttributeConstraint(
+                        query: $query,
+                        search: $searchWord,
+                        searchAttributes: Arr::wrap($attributes),
+                        isFirst: $isFirst,
+                    );
+                }
+            });
+        }
     }
 
     /**
