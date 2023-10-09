@@ -36,7 +36,7 @@
 @endphp
 
 <div
-    @if ($tooltip)
+    @if (filled($tooltip))
         x-data="{}"
         x-tooltip="{
             content: @js($tooltip),
