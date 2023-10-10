@@ -34,7 +34,7 @@
 
     @if ($extraHeadingColumn || $groupsOnly)
         <x-filament-tables::cell
-            class="text-sm font-medium text-gray-950 dark:text-white"
+            class="text-sm font-medium text-gray-950 dark:text-white align-top"
         >
             {{ $heading }}
         </x-filament-tables::cell>
@@ -61,6 +61,7 @@
             <x-filament-tables::cell
                 :colspan="($loop->first && (! $extraHeadingColumn) && (! $groupsOnly) && ($headingColumnSpan > 1)) ? $headingColumnSpan : null"
                 @class([
+                    'align-top',
                     match ($column->getAlignment()) {
                         Alignment::Start, 'start' => 'text-start',
                         Alignment::Center, 'center' => 'text-center',
