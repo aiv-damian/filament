@@ -49,6 +49,8 @@
             $managerLivewireProperties = ['lazy' => true, 'ownerRecord' => $record];
         @endphp
 
-        @livewire($manager, $managerLivewireProperties, key($manager))
+        <div class="grid grid-cols-2">
+            @livewire($manager, $managerLivewireProperties, key($manager))
+        </div>
     @endif
 </x-filament-panels::page>
