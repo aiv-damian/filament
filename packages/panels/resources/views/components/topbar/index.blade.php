@@ -83,16 +83,18 @@
                                             $shouldOpenUrlInNewTab = $child->shouldOpenUrlInNewTab();
                                         @endphp
 
-                                        <x-filament::dropdown.list.item
-                                            :badge="$child->getBadge()"
-                                            :badge-color="$child->getBadgeColor()"
-                                            :href="$child->getUrl()"
-                                            :icon="$child->isActive() ? ($child->getActiveIcon() ?? $icon) : $icon"
-                                            tag="a"
-                                            :target="$shouldOpenUrlInNewTab ? '_blank' : null"
-                                        >
-                                            {{ $child->getLabel() }}
-                                        </x-filament::dropdown.list.item>
+                                        @if ($child->isVisible())
+                                            <x-filament::dropdown.list.item
+                                                :badge="$child->getBadge()"
+                                                :badge-color="$child->getBadgeColor()"
+                                                :href="$child->getUrl()"
+                                                :icon="$child->isActive() ? ($child->getActiveIcon() ?? $icon) : $icon"
+                                                tag="a"
+                                                :target="$shouldOpenUrlInNewTab ? '_blank' : null"
+                                            >
+                                                {{ $child->getLabel() }}
+                                            </x-filament::dropdown.list.item>
+                                        @endif
                                     @endforeach
                                 </x-filament::dropdown.list>
                             </x-filament::dropdown.hover>
