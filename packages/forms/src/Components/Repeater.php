@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Support\Str;
 
 use function Filament\Forms\array_move_after;
 use function Filament\Forms\array_move_before;
@@ -750,7 +749,7 @@ class Repeater extends Field implements Contracts\CanConcealComponents
     public function getAddActionLabel(): string
     {
         return $this->evaluate($this->addActionLabel) ?? __('filament-forms::components.repeater.actions.add.label', [
-            'label' => $this->getLabel()
+            'label' => $this->getLabel(),
         ]);
     }
 
