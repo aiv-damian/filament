@@ -15,7 +15,10 @@
         {{
             $attributes
                 ->merge($getExtraAttributes(), escape: false)
-                ->class(['fi-fo-placeholder sm:text-sm'])
+                ->class([
+                    'fi-fo-placeholder sm:text-sm',
+                    'sm:pt-1.5' => $hasInlineLabel()
+                ])
         }}
     >
         {{ $getContent() }}
