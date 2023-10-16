@@ -43,18 +43,6 @@
             </div>
         </template>
 
-        <div x-ref="preview" style="display: none" wire:ignore>
-            @livewire(
-                'popover',
-                [
-                    'model' => $model,
-                    'view' => $view,
-                    'viewData' => $viewData,
-                ],
-                key($model->getKey())
-            )
-        </div>
-
         <div x-tooltip="{
             content: () => $refs.loader.innerHTML,
             trigger: @js($trigger),
@@ -83,13 +71,14 @@
             offset: @js($offset),
             moveTransition: @js($moveTransition),
             plugins: @js($plugins),
-            onShow(instance) {
-                const componentId = $root.querySelector('[wire\\:id]').getAttribute('wire:id')
-
-                const component = Livewire.find(componentId)
-
-                component.call('openPopover')
-                    .then((blob) => instance.setContent($refs.preview.innerHTML))
+            async onShow(instance) {
+                await fetch('{{ route('filament.tables.popover', [
+                        'modelType' => $model->getMorphClass(),
+                        'modelId' => $model->getKey(),
+                        'view' => $view
+                    ]) }}')
+                    .then((response) => response.text())
+                    .then((response) => instance.setContent(response))
                     .catch(() => instance.setContent(`<div class='p-3'>Something went wrong!</div>`))
             },
             onHidden(instance) {
