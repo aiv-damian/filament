@@ -25,9 +25,9 @@
             type="button"
         @endif
         @class([
-            'flex items-center justify-center gap-x-2 rounded-lg px-3 py-2 text-sm font-semibold outline-none transition duration-75 hover:bg-gray-700 focus:bg-gray-700 dark:hover:bg-white/5 dark:focus:bg-white/5',
-            'text-gray-300 dark:text-gray-200' => ! $active,
-            'bg-gray-900 text-white dark:bg-white/5 dark:text-primary-400' => $active,
+            'flex items-center justify-center gap-x-2 rounded-lg px-3 py-2 text-sm font-semibold outline-none transition duration-75 hover:bg-gray-50 focus-visible:bg-gray-50 dark:hover:bg-white/5 dark:focus-visible:bg-white/5',
+            'text-gray-700 dark:text-gray-200' => ! $active,
+            'bg-gray-50 text-primary-600 dark:bg-white/5 dark:text-primary-400' => $active,
         ])
     >
         @if ($icon || $activeIcon)

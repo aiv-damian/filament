@@ -28,13 +28,17 @@
 ])
 
 @php
+    if (! $iconPosition instanceof IconPosition) {
+        $iconPosition = $iconPosition ? IconPosition::tryFrom($iconPosition) : null;
+    }
+
     if (! $size instanceof ActionSize) {
         $size = ActionSize::tryFrom($size) ?? $size;
     }
 
     $buttonClasses = \Illuminate\Support\Arr::toCssClasses([
         ...[
-            'fi-btn relative grid-flow-col items-center justify-center font-semibold outline-none transition duration-75 focus:ring-2',
+            'fi-btn relative grid-flow-col items-center justify-center font-semibold outline-none transition duration-75 focus-visible:ring-2',
             'pointer-events-none opacity-70' => $disabled,
             'flex-1' => $grouped,
             'rounded-lg' => ! $grouped,
@@ -70,7 +74,7 @@
                 [
                     'fi-btn-outlined ring-1',
                     match ($color) {
-                        'gray' => 'text-gray-950 ring-gray-300 hover:bg-gray-400/10 focus:ring-gray-400/40 dark:text-white dark:ring-gray-700',
+                        'gray' => 'text-gray-950 ring-gray-300 hover:bg-gray-400/10 focus-visible:ring-gray-400/40 dark:text-white dark:ring-gray-700',
                         default => 'text-custom-600 ring-custom-600 hover:bg-custom-400/10 dark:text-custom-400 dark:ring-custom-500',
                     },
                 ] :
@@ -83,7 +87,7 @@
                         ],
                         default => [
                             'bg-custom-600 text-white hover:bg-custom-500 dark:bg-custom-500 dark:hover:bg-custom-400',
-                            'focus:ring-custom-500/50 dark:focus:ring-custom-400/50' => ! $grouped,
+                            'focus-visible:ring-custom-500/50 dark:focus-visible:ring-custom-400/50' => ! $grouped,
                         ],
                     },
                 ]
@@ -211,22 +215,32 @@
                 ->style([$buttonStyles])
         }}
     >
-        @if (in_array($iconPosition, [IconPosition::Before, 'before']))
+        @if ($iconPosition === IconPosition::Before)
             @if ($icon)
                 <x-filament::icon
-                    :alias="$iconAlias"
-                    :icon="$icon"
-                    :wire:loading.remove.delay="$hasLoadingIndicator"
-                    :wire:target="$hasLoadingIndicator ? $loadingIndicatorTarget : null"
-                    :class="$iconClasses"
+                    :attributes="
+                        \Filament\Support\prepare_inherited_attributes(
+                            new \Illuminate\View\ComponentAttributeBag([
+                                'alias' => $iconAlias,
+                                'icon' => $icon,
+                                'wire:loading.remove.delay.' . config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator ? '' : false,
+                                'wire:target' => $hasLoadingIndicator ? $loadingIndicatorTarget : null,
+                            ])
+                        )->class([$iconClasses])
+                    "
                 />
             @endif
 
             @if ($hasLoadingIndicator)
                 <x-filament::loading-indicator
-                    wire:loading.delay=""
-                    :wire:target="$loadingIndicatorTarget"
-                    :class="$iconClasses"
+                    :attributes="
+                        \Filament\Support\prepare_inherited_attributes(
+                            new \Illuminate\View\ComponentAttributeBag([
+                                'wire:loading.delay.' . config('filament.livewire_loading_delay', 'default') => '',
+                                'wire:target' => $loadingIndicatorTarget,
+                            ])
+                        )->class([$iconClasses])
+                    "
                 />
             @endif
 
@@ -254,22 +268,32 @@
             </span>
         @endif
 
-        @if (in_array($iconPosition, [IconPosition::After, 'after']))
+        @if ($iconPosition === IconPosition::After)
             @if ($icon)
                 <x-filament::icon
-                    :alias="$iconAlias"
-                    :icon="$icon"
-                    :wire:loading.remove.delay="$hasLoadingIndicator"
-                    :wire:target="$hasLoadingIndicator ? $loadingIndicatorTarget : null"
-                    :class="$iconClasses"
+                    :attributes="
+                        \Filament\Support\prepare_inherited_attributes(
+                            new \Illuminate\View\ComponentAttributeBag([
+                                'alias' => $iconAlias,
+                                'icon' => $icon,
+                                'wire:loading.remove.delay.' . config('filament.livewire_loading_delay', 'default') => $hasLoadingIndicator ? '' : false,
+                                'wire:target' => $hasLoadingIndicator ? $loadingIndicatorTarget : null,
+                            ])
+                        )->class([$iconClasses])
+                    "
                 />
             @endif
 
             @if ($hasLoadingIndicator)
                 <x-filament::loading-indicator
-                    wire:loading.delay=""
-                    :wire:target="$loadingIndicatorTarget"
-                    :class="$iconClasses"
+                    :attributes="
+                        \Filament\Support\prepare_inherited_attributes(
+                            new \Illuminate\View\ComponentAttributeBag([
+                                'wire:loading.delay.' . config('filament.livewire_loading_delay', 'default') => '',
+                                'wire:target' => $loadingIndicatorTarget,
+                            ])
+                        )->class([$iconClasses])
+                    "
                 />
             @endif
 
@@ -311,7 +335,7 @@
                 ->style([$buttonStyles])
         }}
     >
-        @if ($icon && in_array($iconPosition, [IconPosition::Before, 'before']))
+        @if ($icon && $iconPosition === IconPosition::Before)
             <x-filament::icon
                 :alias="$iconAlias"
                 :icon="$icon"
@@ -323,7 +347,7 @@
             {{ $slot }}
         </span>
 
-        @if ($icon && in_array($iconPosition, [IconPosition::After, 'after']))
+        @if ($icon && $iconPosition === IconPosition::After)
             <x-filament::icon
                 :alias="$iconAlias"
                 :icon="$icon"
