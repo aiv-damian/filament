@@ -9,7 +9,7 @@ trait CanSortRecords
 {
     protected array | Closure $defaultSort = [];
 
-    protected bool | Closure | null $persistsSortInSession = false;
+    protected bool | Closure | null $persistsSortInSession = true;
 
     protected bool | Closure | null $sortsMultipleColumns = true;
 

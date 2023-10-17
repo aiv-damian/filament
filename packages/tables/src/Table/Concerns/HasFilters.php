@@ -29,7 +29,7 @@ trait HasFilters
 
     protected ?Closure $modifyFiltersTriggerActionUsing = null;
 
-    protected bool | Closure | null $persistsFiltersInSession = false;
+    protected bool | Closure | null $persistsFiltersInSession = true;
 
     protected bool | Closure $shouldDeselectAllRecordsWhenFiltered = true;
 
