@@ -72,11 +72,21 @@
             moveTransition: @js($moveTransition),
             plugins: @js($plugins),
             async onShow(instance) {
-                await fetch('{{ route('filament.tables.popover', [
-                        'modelType' => $model->getMorphClass(),
-                        'modelId' => $model->getKey(),
-                        'view' => $view
-                    ]) }}')
+                await fetch('{{ route('filament.tables.popover') }}', {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-Token': '{{ csrf_token() }}'
+                        },
+                        method: 'post',
+                        body: JSON.stringify({
+                            'modelType': @js($model->getMorphClass()),
+                            'modelId': @js($model->getKey()),
+                            'view': @js($view),
+                            'viewData': @js($viewData)
+                        })
+                    })
                     .then((response) => response.text())
                     .then((response) => instance.setContent(response))
                     .catch(() => instance.setContent(`<div class='p-3'>Something went wrong!</div>`))
