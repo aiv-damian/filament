@@ -19,7 +19,7 @@
 
     <section
         @class([
-            'flex flex-col gap-y-8 py-8',
+            'flex flex-col gap-y-4 py-8',
             'h-full' => $fullHeight,
         ])
     >
