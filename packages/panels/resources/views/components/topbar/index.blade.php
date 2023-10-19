@@ -123,14 +123,14 @@
             {{ \Filament\Support\Facades\FilamentView::renderHook('panels::global-search.before') }}
 
             @if (filament()->isGlobalSearchEnabled())
-                @livewire(Filament\Livewire\GlobalSearch::class, ['lazy' => true])
+                @livewire(Filament\Livewire\GlobalSearch::class)
             @endif
 
             {{ \Filament\Support\Facades\FilamentView::renderHook('panels::global-search.after') }}
 
             @if (filament()->auth()->check())
                 @if (filament()->hasDatabaseNotifications())
-                    @livewire(Filament\Livewire\DatabaseNotifications::class, ['lazy' => true])
+                    @livewire(Filament\Livewire\DatabaseNotifications::class)
                 @endif
 
                 <x-filament-panels::user-menu />
