@@ -106,7 +106,7 @@ class Summarizer extends ViewComponent
                 );
         }
 
-        $query = DB::table($query->toBase());
+        $query = DB::table($query->toBase(), $query->getModel()->getTable());
 
         if ($this->hasQueryModification()) {
             $query = $this->evaluate($this->modifyQueryUsing, [
