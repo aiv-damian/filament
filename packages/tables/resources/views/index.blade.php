@@ -14,26 +14,7 @@
     $content = $getContent();
     $contentGrid = $getContentGrid();
     $contentFooter = $getContentFooter();
-    $filterIndicators = [
-        ...($hasSearch() ? ['resetTableSearch' => $getSearchIndicator()] : []),
-        ...collect($getColumnSearchIndicators())
-            ->mapWithKeys(fn (string $indicator, string $column): array => [
-                "resetTableColumnSearch('{$column}')" => $indicator,
-            ])
-            ->all(),
-        ...array_reduce(
-            $getFilters(),
-            fn (array $carry, \Filament\Tables\Filters\BaseFilter $filter): array => [
-                ...$carry,
-                ...collect($filter->getIndicators())
-                    ->mapWithKeys(fn (string $label, int | string $field) => [
-                        "removeTableFilter('{$filter->getName()}'" . (is_string($field) ? ' , \'' . $field . '\'' : null) . ')' => $label,
-                    ])
-                    ->all(),
-            ],
-            [],
-        ),
-    ];
+    $filterIndicators = $getFilterIndicators();
     $hasColumnsLayout = $hasColumnsLayout();
     $hasSummary = $hasSummary();
     $header = $getHeader();
@@ -216,21 +197,15 @@
             <div
                 @if (! $hasHeaderToolbar) x-cloak @endif
                 x-show="@js($hasHeaderToolbar) || (selectedRecords.length && @js(count($bulkActions)))"
-                class="fi-ta-header-toolbar flex items-center justify-between gap-3 px-4 py-3 sm:px-6"
+                class="fi-ta-header-toolbar flex items-center justify-between gap-x-4 px-4 py-3 sm:px-6"
             >
                 {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.start', scopes: static::class) }}
 
-                <div class="flex shrink-0 items-center gap-x-3">
+                <div class="flex shrink-0 items-center gap-x-4">
                     {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.reorder-trigger.before', scopes: static::class) }}
 
                     @if ($isReorderable)
-                        <span
-                            x-show="! selectedRecords.length"
-                            @class([
-                                'inline-flex',
-                                '-me-1 -ms-2' => $reorderRecordsTriggerAction->isIconButton(),
-                            ])
-                        >
+                        <span x-show="! selectedRecords.length">
                             {{ $reorderRecordsTriggerAction }}
                         </span>
                     @endif
