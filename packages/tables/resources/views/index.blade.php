@@ -139,40 +139,8 @@
                 <div class="fi-ta-header-toolbar flex items-center justify-between gap-x-4">
                     {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.start', scopes: static::class) }}
 
-                    <div class="flex shrink-0 items-center gap-x-4">
-                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.reorder-trigger.before', scopes: static::class) }}
-
-                        @if ($isReorderable)
-                            <span x-show="! selectedRecords.length">
-                            {{ $reorderRecordsTriggerAction }}
-                        </span>
-                        @endif
-
-                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.reorder-trigger.after', scopes: static::class) }}
-
-                        @if ((! $isReordering) && count($bulkActions))
-                            <x-filament-tables::actions
-                                :actions="$bulkActions"
-                                x-cloak="x-cloak"
-                                x-show="selectedRecords.length"
-                            />
-                        @endif
-
-                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.grouping-selector.before', scopes: static::class) }}
-
-                        @if (count($groups))
-                            <x-filament-tables::groups
-                                :dropdown-on-desktop="$areGroupsInDropdownOnDesktop()"
-                                :groups="$groups"
-                                :trigger-action="$getGroupRecordsTriggerAction()"
-                            />
-                        @endif
-
-                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.grouping-selector.after', scopes: static::class) }}
-                    </div>
-
                     @if ($isGlobalSearchVisible || $hasFiltersDialog || $hasColumnToggleDropdown)
-                        <div class="ms-auto flex items-center gap-x-4">
+                        <div class="flex items-center gap-x-4">
                             {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.search.before', scopes: static::class) }}
 
                             @if ($isGlobalSearchVisible)
@@ -219,6 +187,38 @@
                             @endif
                         </div>
                     @endif
+
+                    <div class="flex shrink-0 items-center gap-x-4">
+                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.reorder-trigger.before', scopes: static::class) }}
+
+                        @if ($isReorderable)
+                            <span x-show="! selectedRecords.length">
+                            {{ $reorderRecordsTriggerAction }}
+                        </span>
+                        @endif
+
+                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.reorder-trigger.after', scopes: static::class) }}
+
+                        @if ((! $isReordering) && count($bulkActions))
+                            <x-filament-tables::actions
+                                :actions="$bulkActions"
+                                x-cloak="x-cloak"
+                                x-show="selectedRecords.length"
+                            />
+                        @endif
+
+                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.grouping-selector.before', scopes: static::class) }}
+
+                        @if (count($groups))
+                            <x-filament-tables::groups
+                                :dropdown-on-desktop="$areGroupsInDropdownOnDesktop()"
+                                :groups="$groups"
+                                :trigger-action="$getGroupRecordsTriggerAction()"
+                            />
+                        @endif
+
+                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.grouping-selector.after', scopes: static::class) }}
+                    </div>
 
                     {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.end') }}
                 </div>
