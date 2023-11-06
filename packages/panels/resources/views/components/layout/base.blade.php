@@ -50,6 +50,7 @@
         </style>
 
         @filamentStyles
+
         {{ filament()->getTheme()->getHtml() }}
         {{ filament()->getFontHtml() }}
 
@@ -64,6 +65,8 @@
                 background: var(--primary-500);
             }
         </style>
+
+        @stack('styles')
 
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::styles.after') }}
 
