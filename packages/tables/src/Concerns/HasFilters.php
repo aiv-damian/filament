@@ -160,7 +160,7 @@ trait HasFilters
 
     public function getTableFiltersSessionKey(): string
     {
-        $table = class_basename($this::class);
+        $table = $this::class;
 
         return "tables.{$table}_filters";
     }

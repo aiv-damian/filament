@@ -73,7 +73,7 @@ trait CanPaginateRecords
 
     public function getTablePerPageSessionKey(): string
     {
-        $table = class_basename($this::class);
+        $table = $this::class;
 
         return "tables.{$table}_per_page";
     }
