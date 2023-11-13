@@ -1,5 +1,8 @@
 @php
     use Filament\Tables\Columns\IconColumn\IconColumnSize;
+
+    $descriptionAbove = $getDescriptionAbove();
+    $descriptionBelow = $getDescriptionBelow();
 @endphp
 
 <div
@@ -14,6 +17,12 @@
     }}
 >
     @if (count($arrayState = \Illuminate\Support\Arr::wrap($getState())))
+        @if (filled($descriptionAbove))
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ $descriptionAbove }}
+            </p>
+        @endif
+
         @foreach ($arrayState as $state)
             @if ($icon = $getIcon($state))
                 @php
@@ -45,6 +54,12 @@
                         ) => $color !== 'gray',
                     ])
                 />
+            @endif
+
+            @if (filled($descriptionBelow))
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ $descriptionBelow }}
+                </p>
             @endif
         @endforeach
     @elseif (($placeholder = $getPlaceholder()) !== null)
