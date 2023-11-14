@@ -18,7 +18,7 @@
 >
     @if (count($arrayState = \Illuminate\Support\Arr::wrap($getState())))
         @if (filled($descriptionAbove))
-            <p class="text-sm text-gray-500 dark:text-gray-400">
+            <p class="w-full text-sm text-gray-500 dark:text-gray-400">
                 {{ $descriptionAbove }}
             </p>
         @endif
@@ -57,7 +57,7 @@
             @endif
 
             @if (filled($descriptionBelow))
-                <p class="text-sm text-gray-500 dark:text-gray-400">
+                <p class="w-full text-sm text-gray-500 dark:text-gray-400">
                     {{ $descriptionBelow }}
                 </p>
             @endif
