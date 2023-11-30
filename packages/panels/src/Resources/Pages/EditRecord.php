@@ -9,11 +9,11 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ReplicateAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
-use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;
@@ -47,7 +47,7 @@ class EditRecord extends Page
     {
         return static::$navigationIcon
             ?? FilamentIcon::resolve('panels::resources.pages.edit-record.navigation-item')
-            ?? (Filament::hasTopNavigation() ? 'heroicon-m-pencil-square' : 'heroicon-o-pencil-square');
+            ?? 'heroicon-o-pencil-square';
     }
 
     public function getBreadcrumb(): string
@@ -58,6 +58,11 @@ class EditRecord extends Page
     public function getContentTabLabel(): ?string
     {
         return __('filament-panels::resources/pages/edit-record.content.tab.label');
+    }
+
+    public function getSubNavigationPosition(): SubNavigationPosition
+    {
+        return static::getResource()::getSubNavigationPosition();
     }
 
     public function mount(int | string $record): void
