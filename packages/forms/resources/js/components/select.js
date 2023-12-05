@@ -185,6 +185,10 @@ export default function selectFormComponent({
         refreshChoices: async function (config = {}) {
             const choices = await this.getChoices(config)
 
+            if (!this.select) {
+                return
+            }
+
             this.select.clearStore()
 
             this.refreshPlaceholder()

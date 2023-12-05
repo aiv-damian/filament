@@ -22,7 +22,7 @@
     $popoverAttributes = $column->getPopoverAttributes() ?? [];
 
     if (! $alignment instanceof Alignment) {
-        $alignment = Alignment::tryFrom($alignment) ?? $alignment;
+        $alignment = filled($alignment) ? (Alignment::tryFrom($alignment) ?? $alignment) : null;
     }
 
     $columnClasses = \Illuminate\Support\Arr::toCssClasses([

@@ -180,7 +180,7 @@ class AttachAction extends Action
     {
         $table = $this->getTable();
 
-        $getOptions = function (?string $search = null, ?array $searchColumns = []) use ($table): array {
+        $getOptions = function (int $optionsLimit, ?string $search = null, ?array $searchColumns = []) use ($table): array {
             /** @var BelongsToMany $relationship */
             $relationship = Relation::noConstraints(fn () => $table->getRelationship());
 
@@ -190,6 +190,10 @@ class AttachAction extends Action
                 $relationshipQuery = $this->evaluate($this->modifyRecordSelectOptionsQueryUsing, [
                     'query' => $relationshipQuery,
                 ]) ?? $relationshipQuery;
+            }
+
+            if (! isset($relationshipQuery->getQuery()->limit)) {
+                $relationshipQuery->limit($optionsLimit);
             }
 
             $titleAttribute = $this->getRecordTitleAttribute();
@@ -229,8 +233,11 @@ class AttachAction extends Action
                     fn (Builder $query): Builder => $query->whereDoesntHave(
                         $table->getInverseRelationship(),
                         fn (Builder $query): Builder => $query->where(
-                            $table->getRelationship()->getParent()->getQualifiedKeyName(),
-                            $table->getRelationship()->getParent()->getKey(),
+                            // https://github.com/filamentphp/filament/issues/8067
+                            $relationship->getParent()->getTable() === $relationship->getRelated()->getTable() ?
+                                $relationship->getParent()->getKeyName() :
+                                $relationship->getParent()->getQualifiedKeyName(),
+                            $relationship->getParent()->getKey(),
                         ),
                     ),
                 );
@@ -261,7 +268,7 @@ class AttachAction extends Action
             ->label(__('filament-actions::attach.single.modal.fields.record_id.label'))
             ->required()
             ->searchable($this->getRecordSelectSearchColumns() ?? true)
-            ->getSearchResultsUsing(static fn (Select $component, string $search): array => $getOptions(search: $search, searchColumns: $component->getSearchColumns()))
+            ->getSearchResultsUsing(static fn (Select $component, string $search): array => $getOptions(optionsLimit: $component->getOptionsLimit(), search: $search, searchColumns: $component->getSearchColumns()))
             ->getOptionLabelUsing(function ($value) use ($table): string {
                 $relationship = Relation::noConstraints(fn () => $table->getRelationship());
 
@@ -269,7 +276,16 @@ class AttachAction extends Action
 
                 return $this->getRecordTitle($relationshipQuery->find($value));
             })
-            ->options(fn (): array => $this->isRecordSelectPreloaded() ? $getOptions() : [])
+            ->getOptionLabelsUsing(function (array $values) use ($table): array {
+                $relationship = Relation::noConstraints(fn () => $table->getRelationship());
+
+                $relationshipQuery = app(RelationshipJoiner::class)->prepareQueryForNoConstraints($relationship);
+
+                return $relationshipQuery->find($values)
+                    ->mapWithKeys(fn (Model $record): array => [$record->getKey() => $this->getRecordTitle($record)])
+                    ->all();
+            })
+            ->options(fn (Select $component): array => $this->isRecordSelectPreloaded() ? $getOptions(optionsLimit: $component->getOptionsLimit()) : [])
             ->hiddenLabel();
 
         if ($this->modifyRecordSelectUsing) {
