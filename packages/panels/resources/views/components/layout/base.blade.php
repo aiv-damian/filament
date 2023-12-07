@@ -62,7 +62,7 @@
             }
 
             #nprogress .bar {
-                background: var(--primary-500);
+                background: var(--primary-500) !important;
             }
         </style>
 

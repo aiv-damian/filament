@@ -41,9 +41,7 @@
                 'flex' => filament()->hasTopNavigation(),
             ])
         >
-            @persist('topbar')
-                <x-filament-panels::topbar :navigation="$navigation" />
-            @endpersist
+            <x-filament-panels::topbar :navigation="$navigation" />
 
             <main
                 @class([
