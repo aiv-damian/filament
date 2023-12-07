@@ -60,10 +60,6 @@
                 --sidebar-width: {{ filament()->getSidebarWidth() }};
                 --collapsed-sidebar-width: {{ filament()->getCollapsedSidebarWidth() }};
             }
-
-            #nprogress .bar {
-                background: var(--primary-500) !important;
-            }
         </style>
 
         @stack('styles')
