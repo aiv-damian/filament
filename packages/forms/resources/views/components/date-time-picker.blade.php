@@ -145,10 +145,7 @@
                 <div
                     x-ref="panel"
                     x-cloak
-                    x-float.placement.bottom-start.offset.autoPlacement.shift="{
-                        offset: 8,
-                        autoPlacement: { allowedPlacements: ['top', 'bottom'] },
-                    }"
+                    x-float.placement.bottom-start.offset.flip.shift="{ offset: 8 }"
                     wire:ignore
                     wire:key="{{ $this->getId() }}.{{ $statePath }}.{{ $field::class }}.panel"
                     @class([
@@ -194,7 +191,7 @@
 
                             <div
                                 role="grid"
-                                class="grid grid-cols-[repeat(7,_theme(spacing.7))] gap-1"
+                                class="grid grid-cols-[repeat(7,minmax(theme(spacing.7),1fr))] gap-1"
                             >
                                 <template
                                     x-for="day in emptyDaysInFocusedMonth"

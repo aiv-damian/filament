@@ -54,7 +54,7 @@
             {{ $getExtraAlpineAttributeBag()->class(['flex']) }}
         >
             <x-filament::input
-                x-on:focus="togglePanelVisibility()"
+                x-on:focus="$refs.panel.open($refs.input)"
                 x-on:keydown.enter.stop.prevent="togglePanelVisibility()"
                 x-ref="input"
                 :attributes="
@@ -76,7 +76,7 @@
 
             <div
                 class="flex min-h-full items-center pe-3"
-                x-on:click="$refs.input.focus()"
+                x-on:click="togglePanelVisibility()"
             >
                 <div
                     x-bind:style="{ 'background-color': state }"
@@ -91,10 +91,7 @@
                 wire:ignore.self
                 wire:key="{{ $this->getId() }}.{{ $statePath }}.{{ $field::class }}.panel"
                 x-cloak
-                x-float.placement.bottom-start.offset.autoPlacement.shift="{
-                    offset: 8,
-                    autoPlacement: { allowedPlacements: ['top', 'bottom'] },
-                }"
+                x-float.placement.bottom-start.offset.flip.shift="{ offset: 8 }"
                 x-ref="panel"
                 class="fi-fo-color-picker-panel absolute z-10 hidden rounded-lg shadow-lg"
             >
