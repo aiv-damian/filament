@@ -117,6 +117,8 @@ abstract class Resource
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
 
+    protected static bool $hasTitleCaseModelLabel = true;
+
     public static function form(Form $form): Form
     {
         return $form;
@@ -316,7 +318,7 @@ abstract class Resource
 
     public static function getBreadcrumb(): string
     {
-        return static::$breadcrumb ?? Str::headline(static::getPluralModelLabel());
+        return static::$breadcrumb ?? static::getTitleCasePluralModelLabel();
     }
 
     public static function getEloquentQuery(): Builder
@@ -454,6 +456,15 @@ abstract class Resource
         return static::$modelLabel ?? static::getLabel() ?? get_model_label(static::getModel());
     }
 
+    public static function getTitleCaseModelLabel(): string
+    {
+        if (! static::hasTitleCaseModelLabel()) {
+            return static::getModelLabel();
+        }
+
+        return Str::ucwords(static::getModelLabel());
+    }
+
     public static function getModel(): string
     {
         return static::$model ?? (string) str(class_basename(static::class))
@@ -488,6 +499,25 @@ abstract class Resource
         }
 
         return static::getModelLabel();
+    }
+
+    public static function getTitleCasePluralModelLabel(): string
+    {
+        if (! static::hasTitleCaseModelLabel()) {
+            return static::getPluralModelLabel();
+        }
+
+        return Str::ucwords(static::getPluralModelLabel());
+    }
+
+    public static function titleCaseModelLabel(bool $condition = true): void
+    {
+        static::$hasTitleCaseModelLabel = $condition;
+    }
+
+    public static function hasTitleCaseModelLabel(): bool
+    {
+        return static::$hasTitleCaseModelLabel;
     }
 
     public static function getRecordTitleAttribute(): ?string
@@ -734,7 +764,7 @@ abstract class Resource
 
     public static function getNavigationLabel(): string
     {
-        return static::$navigationLabel ?? Str::headline(static::getPluralModelLabel());
+        return static::$navigationLabel ?? static::getTitleCasePluralModelLabel();
     }
 
     public static function getNavigationBadge(): ?string
@@ -753,6 +783,11 @@ abstract class Resource
     public static function getNavigationSort(): ?int
     {
         return static::$navigationSort;
+    }
+
+    public static function navigationLabel(?string $label): void
+    {
+        static::$navigationLabel = $label;
     }
 
     public static function navigationSort(?int $sort): void
