@@ -224,7 +224,7 @@ class CreateRecord extends Page
     {
         return Action::make('cancel')
             ->label(__('filament-panels::resources/pages/create-record.form.actions.cancel.label'))
-            ->url($this->previousUrl ?? static::getResource()::getUrl())
+            ->url("javascript:history.back()")
             ->color('gray');
     }
 

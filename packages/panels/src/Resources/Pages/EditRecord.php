@@ -298,7 +298,7 @@ class EditRecord extends Page
     {
         return Action::make('cancel')
             ->label(__('filament-panels::resources/pages/edit-record.form.actions.cancel.label'))
-            ->url($this->previousUrl ?? static::getResource()::getUrl())
+            ->url("javascript:history.back()")
             ->color('gray');
     }
 
