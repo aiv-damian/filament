@@ -18,6 +18,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 use function Filament\Support\is_app_url;
 
@@ -110,7 +111,7 @@ class EditRecord extends Page
     {
         $this->data = [
             ...$this->data,
-            ...$this->getRecord()->only($attributes),
+            ...Arr::only($this->getRecord()->attributesToArray(), $attributes),
         ];
     }
 
@@ -148,11 +149,7 @@ class EditRecord extends Page
         $this->getSavedNotification()?->send();
 
         if ($shouldRedirect && ($redirectUrl = $this->getRedirectUrl())) {
-            if (FilamentView::hasSpaMode()) {
-                $this->redirect($redirectUrl, navigate: is_app_url($redirectUrl));
-            } else {
-                $this->redirect($redirectUrl);
-            }
+            $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
         }
     }
 

@@ -10,6 +10,7 @@
     $actionsAlignment = $getActionsAlignment();
     $actionsPosition = $getActionsPosition();
     $actionsColumnLabel = $getActionsColumnLabel();
+    $activeFiltersCount = $getActiveFiltersCount();
     $columns = $getVisibleColumns();
     $collapsibleColumnsLayout = $getCollapsibleColumnsLayout();
     $content = $getContent();
@@ -38,6 +39,7 @@
     $isReordering = $isReordering();
     $isColumnSearchVisible = $isSearchableByColumn();
     $isGlobalSearchVisible = $isSearchable();
+    $isSearchOnBlur = $isSearchOnBlur();
     $isSelectionEnabled = $isSelectionEnabled() && (! $isGroupsOnly);
     $recordCheckboxPosition = $getRecordCheckboxPosition();
     $isStriped = $isStriped();
@@ -54,6 +56,7 @@
     $hasHeaderToolbar = $isReorderable || $areGroupingSettingsVisible || $isGlobalSearchVisible || $hasFiltersDialog || $hasColumnToggleDropdown;
     $pluralModelLabel = $getPluralModelLabel();
     $records = $isLoaded ? $getRecords() : null;
+    $searchDebounce = $getSearchDebounce();
     $sortIndicators = $getSort();
     $allSelectableRecordsCount = ($isSelectionEnabled && $isLoaded) ? $getAllSelectableRecordsCount() : null;
     $columnsCount = count($columns);
@@ -136,7 +139,7 @@
                 <div
                     x-data="{ areFiltersOpen: @js(! $hasFiltersAboveContentCollapsible) }"
                     @class([
-                        'grid gap-y-3 px-4 py-4 sm:px-6',
+                        'fi-ta-filters-above-content-ctn grid gap-y-3 px-4 py-4 sm:px-6',
                     ])
                 >
                     <x-filament-tables::filters
@@ -150,7 +153,7 @@
                             x-on:click="areFiltersOpen = ! areFiltersOpen"
                             class="ms-auto"
                         >
-                            {{ $filtersTriggerAction->badge(count(\Illuminate\Support\Arr::flatten($filterIndicators))) }}
+                            {{ $filtersTriggerAction->badge($activeFiltersCount) }}
                         </span>
                     @endif
                 </div>
@@ -169,6 +172,8 @@
 
                         @if ($isGlobalSearchVisible)
                             <x-filament-tables::search-field
+                                :debounce="$searchDebounce"
+                                :on-blur="$isSearchOnBlur"
                                 :placeholder="$getSearchPlaceholder()"
                             />
                         @endif
@@ -178,8 +183,8 @@
                         @if ($hasFiltersDialog || $hasColumnToggleDropdown)
                             @if ($hasFiltersDialog)
                                 <x-filament-tables::filters.dialog
+                                    :active-filters-count="$activeFiltersCount"
                                     :form="$getFiltersForm()"
-                                    :indicators-count="count(\Illuminate\Support\Arr::flatten($filterIndicators))"
                                     :layout="$filtersLayout"
                                     :max-height="$getFiltersFormMaxHeight()"
                                     :trigger-action="$filtersTriggerAction"
@@ -283,7 +288,7 @@
 
                     @if ($isSelectionEnabled || count($sortableColumns))
                         <div
-                            class="flex items-center gap-4 gap-x-6 bg-gray-50 px-4 dark:bg-white/5 sm:px-6"
+                            class="flex items-center gap-4 gap-x-6 bg-gray-50 px-4 sm:px-6 dark:bg-white/5"
                         >
                             @if ($isSelectionEnabled && (! $isReordering))
                                 <x-filament-tables::selection.checkbox
@@ -825,6 +830,8 @@
                                 >
                                     @if ($column->isIndividuallySearchable())
                                         <x-filament-tables::search-field
+                                            :debounce="$searchDebounce"
+                                            :on-blur="$isSearchOnBlur"
                                             wire-model="tableColumnSearches.{{ $column->getName() }}"
                                         />
                                     @endif
@@ -1131,14 +1138,14 @@
             <x-filament::pagination
                 :page-options="$getPaginationPageOptions()"
                 :paginator="$records"
-                class="px-3 py-3 sm:px-6"
+                class="fi-ta-pagination px-3 py-3 sm:px-6"
             />
         @endif
 
         @if ($hasFiltersBelowContent)
             <x-filament-tables::filters
                 :form="$getFiltersForm()"
-                class="p-4 sm:px-6"
+                class="fi-ta-filters-below-content p-4 sm:px-6"
             />
         @endif
     </x-filament-tables::container>

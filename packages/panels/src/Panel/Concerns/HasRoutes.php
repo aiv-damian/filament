@@ -154,7 +154,7 @@ trait HasRoutes
 
         if ($tenant) {
             $originalTenant = Filament::getTenant();
-            Filament::setTenant($tenant);
+            Filament::setTenant($tenant, isQuiet: true);
 
             $isNavigationMountedOriginally = $this->isNavigationMounted;
             $originalNavigationItems = $this->navigationItems;
@@ -165,15 +165,9 @@ trait HasRoutes
             $this->navigationGroups = [];
 
             $navigation = $this->getNavigation();
-
-            Filament::setTenant($originalTenant);
-
-            $this->isNavigationMounted = $isNavigationMountedOriginally;
-            $this->navigationItems = $originalNavigationItems;
-            $this->navigationGroups = $originalNavigationGroups;
-        } else {
-            $navigation = $this->getNavigation();
         }
+
+        $navigation = $this->getNavigation();
 
         $firstItem = Arr::first($navigation);
 

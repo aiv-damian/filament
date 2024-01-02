@@ -14,8 +14,9 @@
 
 <li
     @class([
-        'fi-topbar-item overflow-hidden',
-        'fi-topbar-item-active' => $active,
+        'fi-topbar-item',
+        // @deprecated `fi-topbar-item-active` has been replaced by `fi-active`.
+        'fi-active fi-topbar-item-active' => $active,
     ])
 >
     <{{ $tag }}
@@ -25,7 +26,7 @@
             type="button"
         @endif
         @class([
-            'flex items-center justify-center gap-x-2 rounded-lg px-3 py-2 text-sm font-semibold outline-none transition duration-75 hover:bg-white/5 focus-visible:bg-white/5',
+            'fi-topbar-item-button flex items-center justify-center gap-x-2 rounded-lg px-3 py-2 text-sm font-semibold outline-none transition duration-75 hover:bg-white/5 focus-visible:bg-white/5',
             'text-gray-300' => ! $active,
             'bg-white/5 text-primary-400' => $active,
         ])
@@ -35,13 +36,19 @@
                 :icon="($active && $activeIcon) ? $activeIcon : $icon"
                 @class([
                     'fi-topbar-item-icon h-5 w-5',
-                    'text-primary-300' => ! $active,
-                    'text-primary-400' => $active,
+                    'text-gray-400 dark:text-gray-500' => ! $active,
+                    'text-primary-600 dark:text-primary-400' => $active,
                 ])
             />
         @endif
 
-        <span>
+        <span
+            @class([
+                'fi-topbar-item-label font-medium text-sm',
+                'text-primary-700 dark:text-primary-200' => ! $active,
+                'text-primary-600 dark:text-primary-400' => $active,
+            ])
+        >
             {{ $slot }}
         </span>
 
@@ -58,7 +65,7 @@
                 @class([
                     'fi-topbar-group-toggle-icon h-5 w-5',
                     'text-gray-400 dark:text-gray-500' => ! $active,
-                    'text-primary-500' => $active,
+                    'text-primary-600 dark:text-primary-400' => $active,
                 ])
             />
         @endif

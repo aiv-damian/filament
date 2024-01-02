@@ -597,6 +597,11 @@ class FilamentManager
         return $this->getCurrentPanel()->hasTenantRegistration();
     }
 
+    public function hasTopbar(): bool
+    {
+        return $this->getCurrentPanel()->hasTopbar();
+    }
+
     public function hasTopNavigation(): bool
     {
         return $this->getCurrentPanel()->hasTopNavigation();
@@ -671,11 +676,11 @@ class FilamentManager
         $this->isServing = $condition;
     }
 
-    public function setTenant(?Model $tenant): void
+    public function setTenant(?Model $tenant, bool $isQuiet = false): void
     {
         $this->tenant = $tenant;
 
-        if ($tenant) {
+        if ($tenant && (! $isQuiet)) {
             event(new TenantSet($tenant, $this->auth()->user()));
         }
     }

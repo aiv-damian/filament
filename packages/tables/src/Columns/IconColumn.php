@@ -10,6 +10,7 @@ use Illuminate\Contracts\Support\Arrayable;
 class IconColumn extends Column
 {
     use Concerns\HasDescription;
+    use Concerns\CanWrap;
     use Concerns\HasColor {
         getColor as getBaseColor;
     }
