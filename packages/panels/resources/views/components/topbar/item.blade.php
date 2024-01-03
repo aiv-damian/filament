@@ -36,8 +36,8 @@
                 :icon="($active && $activeIcon) ? $activeIcon : $icon"
                 @class([
                     'fi-topbar-item-icon h-5 w-5',
-                    'text-gray-400 dark:text-gray-500' => ! $active,
-                    'text-primary-600 dark:text-primary-400' => $active,
+                    'text-primary-300 dark:text-gray-500' => ! $active,
+                    'text-primary-400 dark:text-primary-700' => $active,
                 ])
             />
         @endif
@@ -45,8 +45,8 @@
         <span
             @class([
                 'fi-topbar-item-label font-medium text-sm',
-                'text-primary-700 dark:text-primary-200' => ! $active,
-                'text-primary-600 dark:text-primary-400' => $active,
+                'text-gray-300 dark:text-gray-600' => ! $active,
+                'text-primary-400 dark:text-primary-600' => $active,
             ])
         >
             {{ $slot }}
@@ -65,7 +65,7 @@
                 @class([
                     'fi-topbar-group-toggle-icon h-5 w-5',
                     'text-gray-400 dark:text-gray-500' => ! $active,
-                    'text-primary-600 dark:text-primary-400' => $active,
+                    'text-primary-500 dark:text-primary-700' => $active,
                 ])
             />
         @endif
