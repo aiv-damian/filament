@@ -2,6 +2,7 @@
 
 namespace Filament\Actions;
 
+use Closure;
 use Filament\Support\Components\ViewComponent;
 use Filament\Support\Concerns\HasBadge;
 use Filament\Support\Concerns\HasColor;
@@ -51,6 +52,8 @@ class StaticAction extends ViewComponent
     protected string $viewIdentifier = 'action';
 
     protected ?string $livewireTarget = null;
+
+    protected string | Closure | null $alpineClickHandler = null;
 
     final public function __construct(?string $name)
     {
@@ -105,6 +108,14 @@ class StaticAction extends ViewComponent
     public function isLink(): bool
     {
         return $this->getView() === static::LINK_VIEW;
+    }
+
+    public function alpineClickHandler(string | Closure | null $handler): static
+    {
+        $this->alpineClickHandler = $handler;
+        $this->livewireClickHandlerEnabled(blank($handler));
+
+        return $this;
     }
 
     public static function getDefaultName(): ?string
@@ -168,6 +179,10 @@ class StaticAction extends ViewComponent
 
     public function getAlpineClickHandler(): ?string
     {
+        if (filled($handler = $this->evaluate($this->alpineClickHandler))) {
+            return $handler;
+        }
+
         if (! $this->shouldClose()) {
             return null;
         }
