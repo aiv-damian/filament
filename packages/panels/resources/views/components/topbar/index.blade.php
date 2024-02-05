@@ -68,7 +68,6 @@
                             <x-filament::dropdown.hover
                                 placement="bottom-start"
                                 teleport
-                                :attributes="\Filament\Support\prepare_inherited_attributes($group->getExtraTopbarAttributeBag())"
                             >
                                 <x-slot name="trigger">
                                     <x-filament-panels::topbar.item
