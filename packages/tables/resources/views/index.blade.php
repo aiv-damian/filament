@@ -1,5 +1,6 @@
 @php
     use Filament\Support\Enums\Alignment;
+    use Filament\Support\Enums\VerticalAlignment;
     use Filament\Support\Facades\FilamentView;
     use Filament\Tables\Columns\Column;
     use Filament\Tables\Columns\ColumnGroup;
@@ -170,7 +171,7 @@
                 x-show="@js($hasHeaderToolbar) || (selectedRecords.length && @js(count($bulkActions)))"
                 class="fi-ta-header-toolbar flex items-center justify-between gap-x-4 px-4 py-3 sm:px-6"
             >
-                {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.start', scopes: static::class) }}
+                {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\Tables\View\TablesRenderHook::TOOLBAR_START, scopes: static::class) }}
 
                 @if ($isGlobalSearchVisible || $hasFiltersDialog || $hasColumnToggleDropdown)
                     <div class="flex items-center gap-x-4">
@@ -184,7 +185,7 @@
                             />
                         @endif
 
-                        {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.search.after', scopes: static::class) }}
+                        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\Tables\View\TablesRenderHook::TOOLBAR_SEARCH_AFTER, scopes: static::class) }}
 
                         @if ($hasFiltersDialog || $hasColumnToggleDropdown)
                             @if ($hasFiltersDialog)
@@ -199,7 +200,7 @@
                                 />
                             @endif
 
-                            {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.toggle-column-trigger.before', scopes: static::class) }}
+                            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\Tables\View\TablesRenderHook::TOOLBAR_TOGGLE_COLUMN_TRIGGER_BEFORE, scopes: static::class) }}
 
                             @if ($hasColumnToggleDropdown)
                                 <x-filament-tables::column-toggle.dropdown
@@ -210,7 +211,7 @@
                                 />
                             @endif
 
-                            {{ \Filament\Support\Facades\FilamentView::renderHook('tables::toolbar.toggle-column-trigger.after', scopes: static::class) }}
+                            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\Tables\View\TablesRenderHook::TOOLBAR_TOGGLE_COLUMN_TRIGGER_AFTER, scopes: static::class) }}
                         @endif
                     </div>
                 @endif
@@ -295,7 +296,7 @@
 
                     @if ($isSelectionEnabled || count($sortableColumns))
                         <div
-                            class="flex items-center gap-4 gap-x-6 bg-gray-50 px-4 sm:px-6 dark:bg-white/5"
+                            class="flex items-center gap-4 gap-x-6 bg-gray-50 px-4 dark:bg-white/5 sm:px-6"
                         >
                             @if ($isSelectionEnabled && (! $isReordering))
                                 <x-filament-tables::selection.checkbox
@@ -722,26 +723,32 @@
                                     @if ($columnGroupColumnsCount)
                                         <th
                                             colspan="{{ $columnGroupColumnsCount }}"
-                                            {{ $columnGroup->getExtraHeaderAttributeBag()->class([
-                                                'fi-table-header-group-cell px-3 py-2 sm:first-of-type:ps-6 sm:last-of-type:pe-6 [&:not(:first-of-type)]:border-s [&:not(:last-of-type)]:border-e border-gray-200 dark:border-white/5',
-                                            ]) }}
+                                            {{
+                                                $columnGroup->getExtraHeaderAttributeBag()->class([
+                                                    'fi-table-header-group-cell border-gray-200 px-3 py-2 dark:border-white/5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 [&:not(:first-of-type)]:border-s [&:not(:last-of-type)]:border-e',
+                                                ])
+                                            }}
                                         >
-                                            <div @class([
-                                                'flex w-full items-center',
-                                                'whitespace-nowrap' => ! $isColumnGroupHeaderWrapped,
-                                                'whitespace-normal' => $isColumnGroupHeaderWrapped,
-                                                match ($columnGroupAlignment) {
-                                                    Alignment::Start => 'justify-start',
-                                                    Alignment::Center => 'justify-center',
-                                                    Alignment::End => 'justify-end',
-                                                    Alignment::Left => 'justify-start rtl:flex-row-reverse',
-                                                    Alignment::Right => 'justify-end rtl:flex-row-reverse',
-                                                    Alignment::Justify, Alignment::Between => 'justify-between',
-                                                    default => $columnGroupAlignment,
-                                                },
-                                                $getHiddenClasses($columnGroup),
-                                            ])>
-                                                <span class="text-sm font-semibold text-gray-950 dark:text-white">
+                                            <div
+                                                @class([
+                                                    'flex w-full items-center',
+                                                    'whitespace-nowrap' => ! $isColumnGroupHeaderWrapped,
+                                                    'whitespace-normal' => $isColumnGroupHeaderWrapped,
+                                                    match ($columnGroupAlignment) {
+                                                        Alignment::Start => 'justify-start',
+                                                        Alignment::Center => 'justify-center',
+                                                        Alignment::End => 'justify-end',
+                                                        Alignment::Left => 'justify-start rtl:flex-row-reverse',
+                                                        Alignment::Right => 'justify-end rtl:flex-row-reverse',
+                                                        Alignment::Justify, Alignment::Between => 'justify-between',
+                                                        default => $columnGroupAlignment,
+                                                    },
+                                                    $getHiddenClasses($columnGroup),
+                                                ])
+                                            >
+                                                <span
+                                                    class="text-sm font-semibold text-gray-950 dark:text-white"
+                                                >
                                                     {{ $columnGroup->getLabel() }}
                                                 </span>
                                             </div>
@@ -812,6 +819,10 @@
                         @endif
 
                         @foreach ($columns as $column)
+                            @php
+                                $columnWidth = $column->getWidth();
+                            @endphp
+
                             <x-filament-tables::header-cell
                                 :actively-sorted="in_array($column->getName(), array_keys($getSort()))"
                                 :alignment="$column->getAlignment()"
@@ -823,9 +834,12 @@
                                     \Filament\Support\prepare_inherited_attributes($column->getExtraHeaderAttributeBag())
                                         ->class([
                                             'fi-table-header-cell-' . str($column->getName())->camel()->kebab(),
-                                            'w-full' => $column->canGrow(default: false),
+                                            'w-full' => blank($columnWidth) && $column->canGrow(default: false),
                                             '[&:not(:first-of-type)]:border-s [&:not(:last-of-type)]:border-e border-gray-200 dark:border-white/5' => $column->getGroup(),
                                             $getHiddenClasses($column),
+                                        ])
+                                        ->style([
+                                            'width' => $columnWidth,
                                         ])
                                 "
                             >
@@ -1088,6 +1102,12 @@
                                                 \Filament\Support\prepare_inherited_attributes($column->getExtraCellAttributeBag())
                                                     ->class([
                                                         'fi-table-cell-' . str($column->getName())->camel()->kebab(),
+                                                        match ($column->getVerticalAlignment()) {
+                                                            VerticalAlignment::Start => 'align-top',
+                                                            VerticalAlignment::Center => 'align-middle',
+                                                            VerticalAlignment::End => 'align-bottom',
+                                                            default => null,
+                                                        },
                                                         $getHiddenClasses($column),
                                                     ])
                                             "

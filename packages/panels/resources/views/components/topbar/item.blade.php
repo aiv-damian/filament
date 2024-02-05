@@ -3,6 +3,7 @@
     'activeIcon' => null,
     'badge' => null,
     'badgeColor' => null,
+    'badgeTooltip' => null,
     'icon' => null,
     'shouldOpenUrlInNewTab' => false,
     'url' => null,
@@ -53,7 +54,11 @@
         </span>
 
         @if (filled($badge))
-            <x-filament::badge :color="$badgeColor" size="sm">
+            <x-filament::badge
+                :color="$badgeColor"
+                size="sm"
+                :tooltip="$badgeTooltip"
+            >
                 {{ $badge }}
             </x-filament::badge>
         @endif

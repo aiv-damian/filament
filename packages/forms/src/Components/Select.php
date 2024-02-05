@@ -718,15 +718,19 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return $this->evaluate($this->isSearchable) || $this->isMultiple();
     }
 
-    public function relationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, ?Closure $modifyQueryUsing = null): static
+    public function relationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, ?Closure $modifyQueryUsing = null, bool $ignoreRecord = false): static
     {
         $this->relationship = $name ?? $this->getName();
         $this->relationshipTitleAttribute = $titleAttribute;
 
-        $this->getSearchResultsUsing(static function (Select $component, ?string $search) use ($modifyQueryUsing): array {
+        $this->getSearchResultsUsing(static function (Select $component, ?string $search) use ($modifyQueryUsing, $ignoreRecord): array {
             $relationship = Relation::noConstraints(fn () => $component->getRelationship());
 
             $relationshipQuery = app(RelationshipJoiner::class)->prepareQueryForNoConstraints($relationship);
+
+            if ($ignoreRecord && ($record = $component->getRecord())) {
+                $relationshipQuery->where($record->getQualifiedKeyName(), '!=', $record->getKey());
+            }
 
             if ($modifyQueryUsing) {
                 $relationshipQuery = $component->evaluate($modifyQueryUsing, [
@@ -777,7 +781,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
                 ->toArray();
         });
 
-        $this->options(static function (Select $component) use ($modifyQueryUsing): ?array {
+        $this->options(static function (Select $component) use ($modifyQueryUsing, $ignoreRecord): ?array {
             if (($component->isSearchable()) && ! $component->isPreloaded()) {
                 return null;
             }
@@ -785,6 +789,10 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
             $relationship = Relation::noConstraints(fn () => $component->getRelationship());
 
             $relationshipQuery = app(RelationshipJoiner::class)->prepareQueryForNoConstraints($relationship);
+
+            if ($ignoreRecord && ($record = $component->getRecord())) {
+                $relationshipQuery->where($record->getQualifiedKeyName(), '!=', $record->getKey());
+            }
 
             if ($modifyQueryUsing) {
                 $relationshipQuery = $component->evaluate($modifyQueryUsing, [
@@ -970,6 +978,10 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
         $this->saveRelationshipsUsing(static function (Select $component, Model $record, $state) {
             $relationship = $component->getRelationship();
+
+            if ($relationship instanceof \Znck\Eloquent\Relations\BelongsToThrough) {
+                return;
+            }
 
             if (! $relationship instanceof BelongsToMany) {
                 $relationship->associate($state);

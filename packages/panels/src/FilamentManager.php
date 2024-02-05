@@ -181,6 +181,11 @@ class FilamentManager
         return $this->getCurrentPanel()->getFontUrl();
     }
 
+    public function getGlobalSearchDebounce(): string
+    {
+        return $this->getCurrentPanel()->getGlobalSearchDebounce();
+    }
+
     /**
      * @return array<string>
      */
@@ -303,6 +308,11 @@ class FilamentManager
     public function getProfileUrl(array $parameters = []): ?string
     {
         return $this->getCurrentPanel()->getProfileUrl($parameters);
+    }
+
+    public function isProfilePageSimple(): bool
+    {
+        return $this->getCurrentPanel()->isProfilePageSimple();
     }
 
     /**

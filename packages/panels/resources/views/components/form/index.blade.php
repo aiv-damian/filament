@@ -1,4 +1,9 @@
+@props([
+    'method' => 'post',
+])
+
 <form
+    method="{{ $method }}"
     x-data="{
         isUploadingFile: false,
         init() {
