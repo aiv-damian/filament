@@ -839,7 +839,7 @@
                                             $getHiddenClasses($column),
                                         ])
                                         ->style([
-                                            'width' => $columnWidth,
+                                            ('width: ' . $columnWidth) => filled($columnWidth),
                                         ])
                                 "
                             >
@@ -1233,6 +1233,7 @@
         @if ((($records instanceof \Illuminate\Contracts\Pagination\Paginator) || ($records instanceof \Illuminate\Contracts\Pagination\CursorPaginator)) &&
              ((! ($records instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator)) || $records->total()))
             <x-filament::pagination
+                :extreme-links="$hasExtremePaginationLinks()"
                 :page-options="$getPaginationPageOptions()"
                 :paginator="$records"
                 class="fi-ta-pagination px-3 py-3 sm:px-6"
