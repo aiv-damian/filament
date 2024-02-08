@@ -25,7 +25,6 @@ $app = (new Application($basePathLocator::applicationBasePath()))
     ->createApplication();
 
 $app->register(LivewireServiceProvider::class);
-$app->register(AdminPanelProvider::class);
 $app->register(FilamentServiceProvider::class);
 $app->register(ActionsServiceProvider::class);
 $app->register(FormsServiceProvider::class);
@@ -34,5 +33,7 @@ $app->register(NotificationsServiceProvider::class);
 $app->register(SupportServiceProvider::class);
 $app->register(TablesServiceProvider::class);
 $app->register(WidgetsServiceProvider::class);
+
+$app->register(AdminPanelProvider::class);
 
 return $app;

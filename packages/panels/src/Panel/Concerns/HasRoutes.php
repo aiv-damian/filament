@@ -4,6 +4,7 @@ namespace Filament\Panel\Concerns;
 
 use Closure;
 use Filament\Facades\Filament;
+use Filament\Navigation\NavigationManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Laravel\SerializableClosure\Serializers\Native;
@@ -155,36 +156,42 @@ trait HasRoutes
         if ($tenant) {
             $originalTenant = Filament::getTenant();
             Filament::setTenant($tenant, isQuiet: true);
-
-            $isNavigationMountedOriginally = $this->isNavigationMounted;
-            $originalNavigationItems = $this->navigationItems;
-            $originalNavigationGroups = $this->navigationGroups;
-
-            $this->isNavigationMounted = false;
-            $this->navigationItems = [];
-            $this->navigationGroups = [];
-
-            $navigation = $this->getNavigation();
         }
 
-        $navigation = $this->getNavigation();
+        $this->navigationManager = new NavigationManager();
 
-        $firstItem = Arr::first($navigation);
+        $navigation = $this->navigationManager->get();
 
-        if (! $firstItem) {
-            return null;
+        try {
+            $firstGroup = Arr::first($navigation);
+
+            if (! $firstGroup) {
+                return url($this->getPath());
+            }
+
+            $firstItem = Arr::first($firstGroup->getItems());
+
+            if (! $firstItem) {
+                return url($this->getPath());
+            }
+
+            if (filled($firstItem->getUrl())) {
+                return $firstItem->getUrl();
+            }
+
+            $firstChild = Arr::first($firstItem->getChildren());
+
+            if (! $firstChild) {
+                return null;
+            }
+
+            return $firstChild->getUrl();
+        } finally {
+            if ($tenant) {
+                Filament::setTenant($originalTenant, isQuiet: true);
+            }
+
+            $this->navigationManager = null;
         }
-
-        if (filled($firstItem->getUrl())) {
-            return $firstItem->getUrl();
-        }
-
-        $firstChild = Arr::first($firstItem->getChildren());
-
-        if (! $firstChild) {
-            return null;
-        }
-
-        return $firstChild->getUrl();
     }
 }
