@@ -27,7 +27,6 @@ class StaticAction extends ViewComponent
     use Concerns\HasGroupedIcon;
     use Concerns\HasKeyBindings;
     use Concerns\HasLabel;
-    use Concerns\HasMeta;
     use Concerns\HasName;
     use Concerns\HasSize;
     use Concerns\HasTooltip;

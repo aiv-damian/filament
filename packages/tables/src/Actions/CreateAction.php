@@ -27,11 +27,7 @@ class CreateAction extends Action
     {
         parent::setUp();
 
-        $this->label('Toevoegen');
-
-        $this->color('success');
-
-        $this->icon('heroicon-o-plus-circle');
+        $this->label(fn (): string => __('filament-actions::create.single.label', ['label' => $this->getModelLabel()]));
 
         $this->modalHeading(fn (): string => __('filament-actions::create.single.modal.heading', ['label' => $this->getModelLabel()]));
 
