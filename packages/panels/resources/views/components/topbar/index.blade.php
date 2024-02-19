@@ -132,18 +132,62 @@
                             </x-filament::dropdown>
                         @else
                             @foreach ($group->getItems() as $item)
-                                <x-filament-panels::topbar.item
-                                    :active="$item->isActive()"
-                                    :active-icon="$item->getActiveIcon()"
-                                    :badge="$item->getBadge()"
-                                    :badge-color="$item->getBadgeColor()"
-                                    :badge-tooltip="$item->getBadgeTooltip()"
-                                    :icon="$item->getIcon()"
-                                    :should-open-url-in-new-tab="$item->shouldOpenUrlInNewTab()"
-                                    :url="$item->getUrl()"
-                                >
-                                    {{ $item->getLabel() }}
-                                </x-filament-panels::topbar.item>
+                                @if(count($item->getChildItems()) > 0)
+                                    <x-filament::dropdown.hover
+                                        placement="bottom-start"
+                                        teleport
+                                        :attributes="\Filament\Support\prepare_inherited_attributes($group->getExtraTopbarAttributeBag())"
+                                    >
+                                        <x-slot name="trigger">
+                                            <x-filament-panels::topbar.item
+                                                :active="$item->isActive()"
+                                                :active-icon="$item->getActiveIcon()"
+                                                :badge="$item->getBadge()"
+                                                :badge-color="$item->getBadgeColor()"
+                                                :badge-tooltip="$item->getBadgeTooltip()"
+                                                :icon="$item->getIcon()"
+                                                :should-open-url-in-new-tab="$item->shouldOpenUrlInNewTab()"
+                                                :url="$item->getUrl()"
+                                            >
+                                                {{ $item->getLabel() }}
+                                            </x-filament-panels::topbar.item>
+                                        </x-slot>
+
+                                        <x-filament::dropdown.list>
+                                            @foreach ($item->getChildItems() as $item)
+                                                @php
+                                                    $itemIsActive = $item->isActive();
+                                                @endphp
+
+                                                <x-filament::dropdown.list.item
+                                                    :badge="$item->getBadge()"
+                                                    :badge-color="$item->getBadgeColor()"
+                                                    :badge-tooltip="$item->getBadgeTooltip()"
+                                                    :color="$itemIsActive ? 'primary' : 'gray'"
+                                                    :href="$item->getUrl()"
+                                                    :icon="$itemIsActive ? ($item->getActiveIcon() ?? $item->getIcon()) : $item->getIcon()"
+                                                    tag="a"
+                                                    :target="$item->shouldOpenUrlInNewTab() ? '_blank' : null"
+                                                >
+                                                    {{ $item->getLabel() }}
+                                                </x-filament::dropdown.list.item>
+                                            @endforeach
+                                        </x-filament::dropdown.list>
+                                    </x-filament::dropdown.hover>
+                                @else
+                                    <x-filament-panels::topbar.item
+                                        :active="$item->isActive()"
+                                        :active-icon="$item->getActiveIcon()"
+                                        :badge="$item->getBadge()"
+                                        :badge-color="$item->getBadgeColor()"
+                                        :badge-tooltip="$item->getBadgeTooltip()"
+                                        :icon="$item->getIcon()"
+                                        :should-open-url-in-new-tab="$item->shouldOpenUrlInNewTab()"
+                                        :url="$item->getUrl()"
+                                    >
+                                        {{ $item->getLabel() }}
+                                    </x-filament-panels::topbar.item>
+                                @endif
                             @endforeach
                         @endif
                     @endforeach
