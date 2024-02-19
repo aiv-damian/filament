@@ -9,7 +9,7 @@ use Illuminate\Contracts\Support\Arrayable;
 
 class NavigationItem extends Component
 {
-    protected array | Closure $children = [];
+    protected string | Closure | null $group = null;
 
     protected string | Closure | null $parentItem = null;
 
@@ -71,9 +71,9 @@ class NavigationItem extends Component
         return $this;
     }
 
-    public function children(array | Closure $children): static
+    public function group(string | Closure | null $group): static
     {
-        $this->children = $children;
+        $this->group = $group;
 
         return $this;
     }
@@ -174,9 +174,9 @@ class NavigationItem extends Component
         return $this->evaluate($this->badgeTooltip);
     }
 
-    public function getChildren(): array
+    public function getGroup(): ?string
     {
-        return $this->evaluate($this->children);
+        return $this->evaluate($this->group);
     }
 
     public function getParentItem(): ?string

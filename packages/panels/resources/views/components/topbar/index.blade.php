@@ -11,7 +11,7 @@
     }}
 >
     <nav
-        class="flex h-16 items-center gap-x-4 bg-gradient-to-tl from-slate-800 to-slate-900 px-4 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 md:px-6 lg:px-8"
+        class="flex h-16 items-center gap-x-4 bg-white px-4 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 md:px-6 lg:px-8"
     >
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_START) }}
 
@@ -63,58 +63,88 @@
 
             @if (filament()->hasNavigation())
                 <ul class="me-4 hidden items-center gap-x-4 lg:flex">
-                    @foreach ($navigation as $item)
-                        @if (count($item->getChildren()))
-                            <x-filament::dropdown.hover
+                    @foreach ($navigation as $group)
+                        @if ($groupLabel = $group->getLabel())
+                            <x-filament::dropdown
                                 placement="bottom-start"
                                 teleport
+                                :attributes="\Filament\Support\prepare_inherited_attributes($group->getExtraTopbarAttributeBag())"
                             >
                                 <x-slot name="trigger">
                                     <x-filament-panels::topbar.item
-                                        :active="$item->isActive()"
-                                        :icon="$item->getIcon()"
-                                        :url="$item->getUrl()"
+                                        :active="$group->isActive()"
+                                        :icon="$group->getIcon()"
                                     >
-                                        {{ $item->getLabel() }}
+                                        {{ $groupLabel }}
                                     </x-filament-panels::topbar.item>
                                 </x-slot>
 
-                                <x-filament::dropdown.list>
-                                    @foreach ($item->getChildren() as $child)
-                                        @php
-                                            $icon = $child->getIcon();
-                                            $shouldOpenUrlInNewTab = $child->shouldOpenUrlInNewTab();
-                                        @endphp
+                                @php
+                                    $lists = [];
 
-                                        @if ($child->isVisible())
+                                    foreach ($group->getItems() as $item) {
+                                        if ($childItems = $item->getChildItems()) {
+                                            $lists[] = [
+                                                $item,
+                                                ...$childItems,
+                                            ];
+                                            $lists[] = [];
+
+                                            continue;
+                                        }
+
+                                        if (empty($lists)) {
+                                            $lists[] = [$item];
+
+                                            continue;
+                                        }
+
+                                        $lists[count($lists) - 1][] = $item;
+                                    }
+
+                                    if (empty($lists[count($lists) - 1])) {
+                                        array_pop($lists);
+                                    }
+                                @endphp
+
+                                @foreach ($lists as $list)
+                                    <x-filament::dropdown.list>
+                                        @foreach ($list as $item)
+                                            @php
+                                                $itemIsActive = $item->isActive();
+                                            @endphp
+
                                             <x-filament::dropdown.list.item
-                                                :badge="$child->getBadge()"
-                                                :badge-color="$child->getBadgeColor()"
+                                                :badge="$item->getBadge()"
+                                                :badge-color="$item->getBadgeColor()"
                                                 :badge-tooltip="$item->getBadgeTooltip()"
-                                                :href="$child->getUrl()"
-                                                :icon="$child->isActive() ? ($child->getActiveIcon() ?? $icon) : $icon"
+                                                :color="$itemIsActive ? 'primary' : 'gray'"
+                                                :href="$item->getUrl()"
+                                                :icon="$itemIsActive ? ($item->getActiveIcon() ?? $item->getIcon()) : $item->getIcon()"
                                                 tag="a"
-                                                :target="$shouldOpenUrlInNewTab ? '_blank' : null"
+                                                :target="$item->shouldOpenUrlInNewTab() ? '_blank' : null"
                                             >
-                                                {{ $child->getLabel() }}
+                                                {{ $item->getLabel() }}
                                             </x-filament::dropdown.list.item>
-                                        @endif
-                                    @endforeach
-                                </x-filament::dropdown.list>
-                            </x-filament::dropdown.hover>
+                                        @endforeach
+                                    </x-filament::dropdown.list>
+                                @endforeach
+                            </x-filament::dropdown>
                         @else
-                            <x-filament-panels::topbar.item
-                                :active="$item->isActive()"
-                                :active-icon="$item->getActiveIcon()"
-                                :badge="$item->getBadge()"
-                                :badge-color="$item->getBadgeColor()"
-                                :badge-tooltip="$item->getBadgeTooltip()"
-                                :icon="$item->getIcon()"
-                                :should-open-url-in-new-tab="$item->shouldOpenUrlInNewTab()"
-                                :url="$item->getUrl()"
-                            >
-                                {{ $item->getLabel() }}
-                            </x-filament-panels::topbar.item>
+                            @foreach ($group->getItems() as $item)
+                                <x-filament-panels::topbar.item
+                                    :active="$item->isActive()"
+                                    :active-icon="$item->getActiveIcon()"
+                                    :badge="$item->getBadge()"
+                                    :badge-color="$item->getBadgeColor()"
+                                    :badge-tooltip="$item->getBadgeTooltip()"
+                                    :icon="$item->getIcon()"
+                                    :should-open-url-in-new-tab="$item->shouldOpenUrlInNewTab()"
+                                    :url="$item->getUrl()"
+                                >
+                                    {{ $item->getLabel() }}
+                                </x-filament-panels::topbar.item>
+                            @endforeach
                         @endif
                     @endforeach
                 </ul>
