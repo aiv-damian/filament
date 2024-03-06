@@ -788,7 +788,7 @@ abstract class Resource
         static::$navigationParentItem = $item;
     }
 
-    public static function getNavigationIcon(): ?string
+    public static function getNavigationIcon(): string | Htmlable | null
     {
         return static::$navigationIcon;
     }
@@ -798,7 +798,7 @@ abstract class Resource
         static::$navigationIcon = $icon;
     }
 
-    public static function getActiveNavigationIcon(): ?string
+    public static function getActiveNavigationIcon(): string | Htmlable | null
     {
         return static::$activeNavigationIcon ?? static::getNavigationIcon();
     }
