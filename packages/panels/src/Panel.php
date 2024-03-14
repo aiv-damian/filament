@@ -78,6 +78,7 @@ class Panel extends Component
         FilamentIcon::register($this->getIcons());
 
         FilamentView::spa($this->hasSpaMode());
+        FilamentView::spaUrlExceptions($this->getSpaUrlExceptions());
 
         $this->registerRenderHooks();
 

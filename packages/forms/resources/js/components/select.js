@@ -154,7 +154,7 @@ export default function selectFormComponent({
                         }
 
                         await this.refreshChoices({
-                            withInitialOptions: !hasDynamicOptions,
+                            withInitialOptions: false,
                         })
                     },
                 )
