@@ -3,6 +3,14 @@
 
     $descriptionAbove = $getDescriptionAbove();
     $descriptionBelow = $getDescriptionBelow();
+
+    $arrayState = $getState();
+
+    if ($arrayState instanceof \Illuminate\Support\Collection) {
+        $arrayState = $arrayState->all();
+    }
+
+    $arrayState = \Illuminate\Support\Arr::wrap($arrayState);
 @endphp
 
 <div
@@ -17,7 +25,7 @@
             ])
     }}
 >
-    @if (count($arrayState = \Illuminate\Support\Arr::wrap($getState())))
+    @if (count($arrayState))
         @if (filled($descriptionAbove))
             <p class="w-full text-sm text-gray-500 dark:text-gray-400">
                 {{ $descriptionAbove }}

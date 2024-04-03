@@ -65,7 +65,7 @@ class Panel extends Component
         $this->registerLivewireComponents();
         $this->registerLivewirePersistentMiddleware();
 
-        if ($this->getTenantDomain() === '{tenant}') {
+        if (str($this->getTenantDomain())->is(['{tenant}', '{tenant:*}'])) {
             // Laravel does not match periods in route parameters by default.
             Route::pattern('tenant', '[a-z0-9.\-]+');
         }
