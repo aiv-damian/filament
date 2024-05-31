@@ -118,9 +118,15 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             $simpleField = $component->getSimpleField();
 
             foreach ($state ?? [] as $itemData) {
-                $items[$component->generateUuid()] = $simpleField ?
-                    [$simpleField->getName() => $itemData] :
-                    $itemData;
+                if ($simpleField) {
+                    $itemData = [$simpleField->getName() => $itemData];
+                }
+
+                if ($uuid = $component->generateUuid()) {
+                    $items[$uuid] = $itemData;
+                } else {
+                    $items[] = $itemData;
+                }
             }
 
             $component->state($items);
@@ -161,11 +167,16 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
                 $newUuid = $component->generateUuid();
 
                 $items = $component->getState();
-                $items[$newUuid] = [];
+
+                if ($newUuid) {
+                    $items[$newUuid] = [];
+                } else {
+                    $items[] = [];
+                }
 
                 $component->state($items);
 
-                $component->getChildComponentContainer($newUuid)->fill();
+                $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill();
 
                 $component->collapsed(false, shouldMakeComponentCollapsible: false);
 
@@ -202,21 +213,27 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             ->label(fn (Repeater $component) => $component->getAddBetweenActionLabel())
             ->color('gray')
             ->action(function (array $arguments, Repeater $component): void {
-                $newUuid = $component->generateUuid();
+                $newKey = $component->generateUuid();
 
                 $items = [];
 
-                foreach ($component->getState() ?? [] as $uuid => $item) {
-                    $items[$uuid] = $item;
+                foreach ($component->getState() ?? [] as $key => $item) {
+                    $items[$key] = $item;
 
-                    if ($uuid === $arguments['afterItem']) {
-                        $items[$newUuid] = [];
+                    if ($key === $arguments['afterItem']) {
+                        if ($newKey) {
+                            $items[$newKey] = [];
+                        } else {
+                            $items[] = [];
+
+                            $newKey = array_key_last($items);
+                        }
                     }
                 }
 
                 $component->state($items);
 
-                $component->getChildComponentContainer($newUuid)->fill();
+                $component->getChildComponentContainer($newKey)->fill();
 
                 $component->collapsed(false, shouldMakeComponentCollapsible: false);
 
@@ -269,7 +286,12 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
                 $newUuid = $component->generateUuid();
 
                 $items = $component->getState();
-                $items[$newUuid] = $items[$arguments['item']];
+
+                if ($newUuid) {
+                    $items[$newUuid] = $items[$arguments['item']];
+                } else {
+                    $items[] = $items[$arguments['item']];
+                }
 
                 $component->state($items);
 
@@ -639,9 +661,15 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             $items = [];
 
             foreach ($state ?? [] as $itemData) {
-                $items[$component->generateUuid()] = $simpleField ?
-                    [$simpleField->getName() => $itemData] :
-                    $itemData;
+                if ($simpleField) {
+                    $itemData = [$simpleField->getName() => $itemData];
+                }
+
+                if ($uuid = $component->generateUuid()) {
+                    $items[$uuid] = $itemData;
+                } else {
+                    $items[] = $itemData;
+                }
             }
 
             $component->hydratedDefaultState = $items;
@@ -1036,7 +1064,6 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
         if (
             $this->getModelInstance()->relationLoaded($relationshipName) &&
             (! $this->modifyRelationshipQueryUsing)
-
         ) {
             return $this->cachedExistingRecords = $this->getRecord()->getRelationValue($relationshipName)
                 ->when(filled($orderColumn), fn (Collection $records) => $records->sortBy($orderColumn))

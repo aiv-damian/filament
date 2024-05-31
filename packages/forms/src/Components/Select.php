@@ -247,7 +247,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return $this;
     }
 
-    public function createOptionUsing(Closure $callback): static
+    public function createOptionUsing(?Closure $callback): static
     {
         $this->createOptionUsing = $callback;
 
@@ -393,7 +393,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return $this;
     }
 
-    public function updateOptionUsing(Closure $callback): static
+    public function updateOptionUsing(?Closure $callback): static
     {
         $this->updateOptionUsing = $callback;
 
@@ -720,6 +720,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
             if ($modifyQueryUsing) {
                 $relationshipQuery = $component->evaluate($modifyQueryUsing, [
                     'query' => $relationshipQuery,
+                    'search' => $search,
                 ]) ?? $relationshipQuery;
             }
 
@@ -815,35 +816,41 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
                 ->toArray();
         });
 
-        $this->loadStateFromRelationshipsUsing(static function (Select $component, $state): void {
+        $this->loadStateFromRelationshipsUsing(static function (Select $component, $state) use ($modifyQueryUsing): void {
             if (filled($state)) {
                 return;
             }
 
             $relationship = $component->getRelationship();
 
-            if ($relationship instanceof BelongsToMany) {
-                /** @var Collection $relatedModels */
-                $relatedModels = $relationship->getResults();
+            if (
+                ($relationship instanceof BelongsToMany) ||
+                ($relationship instanceof HasManyThrough)
+            ) {
+                if ($modifyQueryUsing) {
+                    $component->evaluate($modifyQueryUsing, [
+                        'query' => $relationship->getQuery(),
+                    ]);
+                }
+
+                /** @var Collection $relatedRecords */
+                $relatedRecords = $relationship->getResults();
 
                 $component->state(
                     // Cast the related keys to a string, otherwise JavaScript does not
                     // know how to handle deselection.
                     //
                     // https://github.com/filamentphp/filament/issues/1111
-                    $relatedModels
-                        ->pluck($relationship->getRelatedKeyName())
+                    $relatedRecords
+                        ->pluck(($relationship instanceof BelongsToMany) ? $relationship->getRelatedKeyName() : $relationship->getRelated()->getKeyName())
                         ->map(static fn ($key): string => strval($key))
-                        ->toArray(),
+                        ->all(),
                 );
 
                 return;
             }
 
-            if (
-                ($relationship instanceof HasManyThrough) ||
-                ($relationship instanceof BelongsToThrough)
-            ) {
+            if ($relationship instanceof BelongsToThrough) {
                 $relatedModel = $relationship->getResults();
 
                 $component->state(
@@ -961,7 +968,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
             },
         );
 
-        $this->saveRelationshipsUsing(static function (Select $component, Model $record, $state) {
+        $this->saveRelationshipsUsing(static function (Select $component, Model $record, $state) use ($modifyQueryUsing) {
             $relationship = $component->getRelationship();
 
             if (
@@ -989,15 +996,38 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
                 return;
             }
 
+            if ($modifyQueryUsing) {
+                $component->evaluate($modifyQueryUsing, [
+                    'query' => $relationship->getQuery(),
+                ]);
+            }
+
+            /** @var Collection $relatedRecords */
+            $relatedRecords = $relationship->getResults();
+
+            $state = Arr::wrap($state ?? []);
+
+            $recordsToDetach = array_diff(
+                $relatedRecords
+                    ->pluck($relationship->getRelatedKeyName())
+                    ->map(static fn ($key): string => strval($key))
+                    ->all(),
+                $state,
+            );
+
+            if (count($recordsToDetach) > 0) {
+                $relationship->detach($recordsToDetach);
+            }
+
             $pivotData = $component->getPivotData();
 
             if ($pivotData === []) {
-                $relationship->sync($state ?? []);
+                $relationship->sync($state, detaching: false);
 
                 return;
             }
 
-            $relationship->syncWithPivotValues($state ?? [], $pivotData);
+            $relationship->syncWithPivotValues($state, $pivotData, detaching: false);
         });
 
         $this->createOptionUsing(static function (Select $component, array $data, Form $form) {

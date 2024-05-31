@@ -498,12 +498,35 @@ Action::make('updateAuthor')
     ->closeModalByClickingAway(false)
 ```
 
-If you'd like to change the behaviour for all modals in the application, you can do so by calling `Modal::closedByClickingAway()` inside a service provider or middleware:
+If you'd like to change the behavior for all modals in the application, you can do so by calling `Modal::closedByClickingAway()` inside a service provider or middleware:
 
 ```php
 use Filament\Support\View\Components\Modal;
 
 Modal::closedByClickingAway(false);
+```
+
+## Closing the modal by escaping
+
+By default, when you press escape on a modal, it will close itself. If you wish to disable this behavior for a specific action, you can use the `closedByEscaping(false)` method:
+
+```php
+Action::make('updateAuthor')
+    ->form([
+        // ...
+    ])
+    ->action(function (array $data): void {
+        // ...
+    })
+    ->closedByEscaping(false)
+```
+
+If you'd like to change the behavior for all modals in the application, you can do so by calling `Modal::closedByEscaping()` inside a service provider or middleware:
+
+```php
+use Filament\Support\View\Components\Modal;
+
+Modal::closedByEscaping(false);
 ```
 
 ## Hiding the modal close button
@@ -551,4 +574,13 @@ Action::make('create')
     })
     ->modalHidden(fn (): bool => $this->role !== 'admin')
     ->modalContent(view('filament.pages.actions.create'))
+```
+
+## Adding extra attributes to the modal window
+
+You may also pass extra HTML attributes to the modal window using `extraModalWindowAttributes()`:
+
+```php
+Action::make('updateAuthor')
+    ->extraModalWindowAttributes(['class' => 'update-author-modal'])
 ```
