@@ -1,5 +1,5 @@
 {
-    "name": "aiv/filament",
+    "name": "filament/filament",
     "description": "A collection of full-stack components for accelerated Laravel development.",
     "license": "MIT",
     "require": {
@@ -10,8 +10,7 @@
     "require-dev": {
         "anourvalar/eloquent-serialize": "^1.2",
         "danharrin/livewire-rate-limiting": "^0.3|^1.0",
-        "aiv/support": "*",
-        "kirschbaum-development/eloquent-power-joins": "^3.0",
+        "filament/support": "*",
         "larastan/larastan": "^2.2",
         "laravel/pint": "^1.0",
         "league/csv": "^9.14",
@@ -42,16 +41,21 @@
             "Filament\\": [
                 "packages/panels/src",
                 "packages/spatie-laravel-media-library-plugin/src",
-                "packages/spatie-laravel-tags-plugin/src"
+                "packages/spatie-laravel-settings-plugin/src",
+                "packages/spatie-laravel-tags-plugin/src",
+                "packages/spatie-laravel-translatable-plugin/src"
             ],
             "Filament\\Actions\\": "packages/actions/src",
+            "Filament\\Billing\\Providers\\": "packages/spark-billing-provider/src",
             "Filament\\Forms\\": "packages/forms/src",
+            "Filament\\FontProviders\\": "packages/spatie-laravel-google-fonts-plugin/src",
             "Filament\\Infolists\\": "packages/infolists/src",
             "Filament\\Notifications\\": "packages/notifications/src",
             "Filament\\Support\\": "packages/support/src",
             "Filament\\Tables\\": "packages/tables/src",
             "Filament\\Tests\\": "tests/src",
             "Filament\\Tests\\Database\\Factories\\": "tests/database/factories",
+            "Filament\\Upgrade\\": "packages/upgrade/src",
             "Filament\\Widgets\\": "packages/widgets/src"
         }
     },

@@ -8,10 +8,9 @@ class Get
 {
     public function __construct(
         protected Component $component,
-    ) {
-    }
+    ) {}
 
-    public function __invoke(string | Component $path, bool $isAbsolute = false, mixed $default = null): mixed
+    public function __invoke(string | Component $path = '', bool $isAbsolute = false, mixed $default = null): mixed
     {
         $livewire = $this->component->getLivewire();
 

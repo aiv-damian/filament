@@ -352,6 +352,14 @@ class FilamentManager
         return $this->getCurrentPanel()->getResources();
     }
 
+    /**
+     * @param  array<mixed>  $parameters
+     */
+    public function getResourceUrl(string | Model $model, string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?Model $tenant = null): string
+    {
+        return $this->getCurrentPanel()->getResourceUrl($model, $name, $parameters, $isAbsolute, $tenant);
+    }
+
     public function getSidebarWidth(): string
     {
         return $this->getCurrentPanel()->getSidebarWidth();
@@ -457,8 +465,6 @@ class FilamentManager
 
     public function getUserAvatarUrl(Model | Authenticatable $user): string
     {
-        $avatar = null;
-
         if ($user instanceof HasAvatar) {
             $avatar = $user->getFilamentAvatarUrl();
         } else {

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 class Panel extends Component
 {
+    use Panel\Concerns\CanGenerateResourceUrls;
     use Panel\Concerns\HasActivityManager;
     use Panel\Concerns\HasAssets;
     use Panel\Concerns\HasAuth;
