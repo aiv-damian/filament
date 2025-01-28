@@ -125,6 +125,11 @@
 
         @if ($footer = $this->getFooter())
             {{ $footer }}
+        @else
+            <x-filament-panels::footer
+                :actions="$this->getCachedHeaderActions()"
+                :breadcrumbs="filament()->hasBreadcrumbs() ? $this->getBreadcrumbs() : []"
+            >
         @endif
     </section>
 
