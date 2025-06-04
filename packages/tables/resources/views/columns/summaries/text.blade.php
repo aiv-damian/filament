@@ -4,8 +4,7 @@
             $attributes
                 ->merge($getExtraAttributes(), escape: false)
                 ->class([
-                    'fi-ta-text-summary grid gap-y-1 px-2 py-1 grid-cols-2',
-                    filled($getLabel()) => 'fi-ta-text-summary grid gap-y-1 px-2 py-1'
+                    'fi-ta-text-summary px-2 py-1'
                 ])
         }}
     >
