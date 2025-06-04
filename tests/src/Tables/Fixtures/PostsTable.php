@@ -24,6 +24,10 @@ class PostsTable extends Component implements HasForms, Tables\Contracts\HasTabl
     {
         return $table
             ->query(Post::query())
+            ->groups(fn () => [
+                Tables\Grouping\Group::make('author.name')
+                    ->label(fn (Table $table, self $livewire) => 'Dynamic label'),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
@@ -94,7 +98,8 @@ class PostsTable extends Component implements HasForms, Tables\Contracts\HasTabl
                 Tables\Filters\Filter::make('is_published')
                     ->query(fn (EloquentBuilder $query) => $query->where('is_published', true)),
                 Tables\Filters\SelectFilter::make('author')
-                    ->relationship('author', 'name'),
+                    ->relationship('author', 'name')
+                    ->searchable(['name', 'email', 'job']),
                 Tables\Filters\SelectFilter::make('select_filter_attribute')
                     ->options([
                         true => 'Published',
@@ -102,6 +107,8 @@ class PostsTable extends Component implements HasForms, Tables\Contracts\HasTabl
                     ])
                     ->attribute('is_published'),
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('hidden_filter')
+                    ->hidden(),
             ])
             ->persistFiltersInSession()
             ->headerActions([

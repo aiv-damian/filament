@@ -235,6 +235,11 @@ class FilamentManager
         return $this->getCurrentPanel()->getMaxContentWidth();
     }
 
+    public function getSimplePageMaxContentWidth(): MaxWidth | string | null
+    {
+        return $this->getCurrentPanel()->getSimplePageMaxContentWidth();
+    }
+
     public function getModelResource(string | Model $model): ?string
     {
         return $this->getCurrentPanel()->getModelResource($model);
@@ -574,6 +579,11 @@ class FilamentManager
     public function hasDatabaseNotifications(): bool
     {
         return $this->getCurrentPanel()->hasDatabaseNotifications();
+    }
+
+    public function hasLazyLoadedDatabaseNotifications(): bool
+    {
+        return $this->getCurrentPanel()->hasLazyLoadedDatabaseNotifications();
     }
 
     public function hasEmailVerification(): bool

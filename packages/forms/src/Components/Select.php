@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrManyThrough;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -277,6 +278,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         }
 
         $action = Action::make($this->getCreateOptionActionName())
+            ->label(__('filament-forms::components.select.actions.create_option.label'))
             ->form(function (Select $component, Form $form): array | Form | null {
                 return $component->getCreateOptionActionForm($form->model(
                     $component->getRelationship() ? $component->getRelationship()->getModel()::class : null,
@@ -431,6 +433,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         }
 
         $action = Action::make($this->getEditOptionActionName())
+            ->label(__('filament-forms::components.select.actions.edit_option.label'))
             ->form(function (Select $component, Form $form): array | Form | null {
                 return $component->getEditOptionActionForm(
                     $form->model($component->getSelectedRecord()),
@@ -789,6 +792,14 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
                 ]) ?? $relationshipQuery;
             }
 
+            $baseRelationshipQuery = $relationshipQuery->getQuery();
+
+            if (isset($baseRelationshipQuery->limit)) {
+                $component->optionsLimit($baseRelationshipQuery->limit);
+            } elseif ($component->isSearchable() && filled($component->getSearchColumns())) {
+                $relationshipQuery->limit($component->getOptionsLimit());
+            }
+
             $qualifiedRelatedKeyName = $component->getQualifiedRelatedKeyNameForRelationship($relationship);
 
             if ($component->hasOptionLabelFromRecordUsingCallback()) {
@@ -828,7 +839,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
             if (
                 ($relationship instanceof BelongsToMany) ||
-                ($relationship instanceof HasManyThrough)
+                ($relationship instanceof (class_exists(HasOneOrManyThrough::class) ? HasOneOrManyThrough::class : HasManyThrough::class))
             ) {
                 if ($modifyQueryUsing) {
                     $component->evaluate($modifyQueryUsing, [
@@ -873,7 +884,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
                 $component->state(
                     $relatedRecords
-                        ->pluck($relationship->getForeignKeyName())
+                        ->pluck($relationship->getLocalKeyName())
                         ->all(),
                 );
 
@@ -885,7 +896,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
                 $component->state(
                     $relatedModel?->getAttribute(
-                        $relationship->getForeignKeyName(),
+                        $relationship->getLocalKeyName(),
                     ),
                 );
 
@@ -1001,7 +1012,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
             if (
                 ($relationship instanceof HasOneOrMany) ||
-                ($relationship instanceof HasManyThrough) ||
+                ($relationship instanceof (class_exists(HasOneOrManyThrough::class) ? HasOneOrManyThrough::class : HasManyThrough::class)) ||
                 ($relationship instanceof BelongsToThrough)
             ) {
                 return;
@@ -1092,7 +1103,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         $query->where(function (Builder $query) use ($databaseConnection, $isForcedCaseInsensitive, $search): Builder {
             $isFirst = true;
 
-            foreach ($this->getSearchColumns() as $searchColumn) {
+            foreach ($this->getSearchColumns() ?? [] as $searchColumn) {
                 $whereClause = $isFirst ? 'where' : 'orWhere';
 
                 $query->{$whereClause}(
@@ -1156,7 +1167,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
         return parent::getLabel();
     }
 
-    public function getRelationship(): BelongsTo | BelongsToMany | HasOneOrMany | HasManyThrough | BelongsToThrough | null
+    public function getRelationship(): BelongsTo | BelongsToMany | HasOneOrMany | HasManyThrough | HasOneOrManyThrough | BelongsToThrough | null
     {
         if (blank($this->getRelationshipName())) {
             return null;
@@ -1218,8 +1229,8 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
 
     public function hasDynamicSearchResults(): bool
     {
-        if ($this->hasRelationship() && empty($this->searchColumns)) {
-            return ! $this->isPreloaded();
+        if ($this->hasRelationship() && blank($this->getSearchColumns())) {
+            return false;
         }
 
         return $this->getSearchResultsUsing instanceof Closure;
@@ -1281,7 +1292,7 @@ class Select extends Field implements Contracts\CanDisableOptions, Contracts\Has
             return $relationship->getQualifiedRelatedKeyName();
         }
 
-        if ($relationship instanceof HasManyThrough) {
+        if ($relationship instanceof (class_exists(HasOneOrManyThrough::class) ? HasOneOrManyThrough::class : HasManyThrough::class)) {
             return $relationship->getQualifiedForeignKeyName();
         }
 

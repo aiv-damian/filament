@@ -34,7 +34,7 @@
                             return
                         }
 
-                        let newState = $refs.newState.value
+                        let newState = $refs.newState.value.replaceAll('\\'+String.fromCharCode(34), String.fromCharCode(34))
 
                         if (state === newState) {
                             return
@@ -72,7 +72,7 @@
                     theme: $store.theme,
                 }
         "
-        x-on:click.stop=""
+        x-on:click.stop.prevent=""
     >
         <x-filament::input.select
             :disabled="$isDisabled"
