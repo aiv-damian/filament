@@ -113,7 +113,7 @@ class SupportServiceProvider extends PackageServiceProvider
             AboutCommand::add('Filament', static fn () => [
                 'Version' => InstalledVersions::getPrettyVersion('filament/support'),
                 'Packages' => collect($packages)
-                    ->filter(fn (string $package): bool => InstalledVersions::isInstalled("filament/{$package}"))
+                    ->filter(fn (string $package): bool => InstalledVersions::isInstalled("aiv/{$package}"))
                     ->join(', '),
                 'Views' => function () use ($packages): string {
                     $publishedViewPaths = collect($packages)

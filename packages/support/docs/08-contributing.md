@@ -43,13 +43,13 @@ Install the packages in your app's `composer.json`:
 {
     // ...
     "require": {
-        "filament/filament": "*",
+        "aiv/filament": "*",
     },
     "minimum-stability": "dev",
     "repositories": [
         {
             "type": "path",
-            "url": "filament/packages/*"
+            "url": "aiv/packages/*"
         }
     ],
     // ...
